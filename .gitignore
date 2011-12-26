@@ -1,0 +1,10 @@
+*.png
+*.avi
+*.o
+*.dll
+*.Debug
+*.Release
+*.exe
+release/
+snapshot/
+ui_*
