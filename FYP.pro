@@ -10,8 +10,8 @@ TARGET = FYP
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        src/mainwindow.cpp \
+SOURCES += src/main.cpp \
+    src/mainwindow.cpp \
     src/effects.cpp \
     src/surf/utils.cpp \
     src/surf/surf.cpp \
