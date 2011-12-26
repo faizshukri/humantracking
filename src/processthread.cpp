@@ -83,7 +83,7 @@ void processThread::run(){
                     writer->operator <<( img );
                 } else { //prevent emit if writer is on
                     emit currentFrame(j, img);
-                    msleep((unsigned long)this->fps);
+                    msleep((unsigned long)Settings::getInstance(0)->getVideoFrame());
                 }
             }
         }

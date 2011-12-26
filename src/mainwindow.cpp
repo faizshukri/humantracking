@@ -96,13 +96,7 @@ void MainWindow::togglePlayPause(){
         QThreadPool::globalInstance()->start(new MyTask(this->mThread));
         ui->btnPlayPause->setIcon(QIcon(":/images/pause"));
     }
-//    if(this->_timer->isActive()){
-//        this->_timer->stop();
-//        ui->btnPlayPause->setIcon(QIcon(":/images/play"));
-//    } else {
-//        this->_timer->start(this->settings->getVideoFrame());
-//        ui->btnPlayPause->setIcon(QIcon(":/images/pause"));
-//    }
+
 }
 
 void MainWindow::toggleCaptureFrame(){
@@ -111,15 +105,12 @@ void MainWindow::toggleCaptureFrame(){
 
 void MainWindow::toggleCaptureFrames(){
 
-//    if(!this->_timer->isActive())
-//        this->_timer->start(0);
 
     this->curFrame = 0;
     this->capture->set(CV_CAP_PROP_POS_FRAMES, 0);
     this->captureFrames = true;
 
     QDateTime timestem = QDateTime::currentDateTime();
-    //this->settings->getSnapPath();
     this->folderPath = this->settings->getSnapPath() + "/" + (timestem.toString("yy-MM-dd hh-mm-ss"));
 
     QDir dir(this->folderPath);
