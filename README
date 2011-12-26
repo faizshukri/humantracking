@@ -29,10 +29,11 @@ There are no known compatibility issues.
 
 
 =============
-Requirement
+Minimum Requirement
 =============
 Nokia Qt 4.7
 OpenCV 2.3
+MinGW Compiler Version 0.4 Alpha 1
 
 
 ===============
