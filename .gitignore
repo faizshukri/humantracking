@@ -2,3 +2,5 @@
 *.o
 *.dll
 *.exe
+release/
+snapshot/
