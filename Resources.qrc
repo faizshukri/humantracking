@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/images">
+        <file alias="play">images/Play-Disabled-icon.ico</file>
+        <file alias="pause">images/Pause-Disabled-icon.ico</file>
+    </qresource>
+</RCC>
