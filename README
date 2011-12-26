@@ -28,6 +28,13 @@ Compatibility Issues
 There are no known compatibility issues.
 
 
+=============
+Requirement
+=============
+Nokia Qt 4.7
+OpenCV 2.3
+
+
 ===============
 Licensing/Legal
 ===============
