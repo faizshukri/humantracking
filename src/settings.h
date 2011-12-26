@@ -13,7 +13,6 @@ class Settings : public QDialog
     Q_OBJECT
 
 public:
-    explicit Settings(QWidget *parent = 0);
     ~Settings();
     QString getSnapPath();
     QString getExportPath();
@@ -21,6 +20,7 @@ public:
     int getVideoCodec();
     int getVideoFrame();
     int getFrameToSkip();
+    static Settings *getInstance(QWidget *parent);
 
 
 protected slots:
@@ -31,11 +31,14 @@ protected slots:
     void browseExtractPoint();
 
 private:
+    //explicit Settings(QWidget *parent = 0); //constructor is private for singleton
+    Settings(QWidget *parent);
     Ui::Settings *ui;
     Settings *myProgSetting;
     QString FileName;
     void initUserSetting();
     void initDefault();
+    static Settings *instance;
 };
 
 #endif // SETTINGS_H

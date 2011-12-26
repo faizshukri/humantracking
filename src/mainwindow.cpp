@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Check the effect setting
 
     this->exports = new Exports(this);
-    this->settings = new Settings(this);
+    this->settings = Settings::getInstance(this);
     this->aboutUs = new About(this);
     this->effect = new Effects();
 

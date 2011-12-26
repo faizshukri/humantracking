@@ -5,6 +5,15 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
+Settings* Settings::instance = NULL;
+
+Settings* Settings::getInstance(QWidget *parent){
+    if(instance == NULL){
+        instance = new Settings(parent);
+    }
+    return instance;
+}
+
 Settings::Settings(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Settings)

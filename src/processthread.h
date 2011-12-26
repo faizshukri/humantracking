@@ -7,6 +7,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "effects.h"
+#include "settings.h"
 
 class processThread : public QThread
 {

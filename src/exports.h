@@ -38,7 +38,7 @@ private:
     QStringList fileName; //store the video output filename
     cv::VideoWriter* writer;
 
-    Settings setting;
+    Settings *setting;
     Effects* effect;
 
     processThread **thread;

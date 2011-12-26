@@ -42,6 +42,7 @@ Exports::Exports(QWidget *parent) :
     connect(ui->txtThresh, SIGNAL(textChanged(QString)), this, SLOT(setThresh(QString)));
 
     this->effect = new Effects();
+    this->setting = Settings::getInstance(this);
 
 }
 
@@ -57,7 +58,7 @@ void Exports::setCurFrame(int cur){
         int ret = QMessageBox::information(this, "Export Result", "Your videos have been processed successfully.", QMessageBox::Open | QMessageBox::Ok);
 
         if(ret == QMessageBox::Open){
-            QProcess::startDetached("explorer " + this->setting.getExportPath());
+            QProcess::startDetached("explorer " + this->setting->getExportPath());
         }
     }
 }
@@ -164,7 +165,7 @@ void Exports::timerTick(){
 
         this->capture[i]->operator >>( img );
         if(!img.data) break;
-        string path = this->setting.getExportPath().toStdString() + "\\" + this->fileName.at(i).toStdString();
+        string path = this->setting->getExportPath().toStdString() + "\\" + this->fileName.at(i).toStdString();
        // this->writer = new cv::VideoWriter(path, CV_FOURCC('D','I','V','X'), this->capture[i]->get(CV_CAP_PROP_FPS), img.size(), true);
 
         this->thread[i] = new processThread(this,this->capture[i],path);
