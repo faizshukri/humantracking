@@ -11,40 +11,40 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    effects.cpp \
-    surf/utils.cpp \
-    surf/surf.cpp \
-    surf/ipoint.cpp \
-    surf/integral.cpp \
-    surf/fasthessian.cpp \
-    exports.cpp \
-    settings.cpp \
-    about.cpp \
-    dialogsnapframes.cpp \
-    processthread.cpp
+        src/mainwindow.cpp \
+    src/effects.cpp \
+    src/surf/utils.cpp \
+    src/surf/surf.cpp \
+    src/surf/ipoint.cpp \
+    src/surf/integral.cpp \
+    src/surf/fasthessian.cpp \
+    src/exports.cpp \
+    src/settings.cpp \
+    src/about.cpp \
+    src/dialogsnapframes.cpp \
+    src/processthread.cpp
 
-HEADERS  += mainwindow.h \
-    effects.h \
-    surf/utils.h \
-    surf/surflib.h \
-    surf/surf.h \
-    surf/responselayer.h \
-    surf/kmeans.h \
-    surf/ipoint.h \
-    surf/integral.h \
-    surf/fasthessian.h \
-    exports.h \
-    settings.h \
-    about.h \
-    dialogsnapframes.h \
-    processthread.h
+HEADERS  += src/mainwindow.h \
+    src/effects.h \
+    src/surf/utils.h \
+    src/surf/surflib.h \
+    src/surf/surf.h \
+    src/surf/responselayer.h \
+    src/surf/kmeans.h \
+    src/surf/ipoint.h \
+    src/surf/integral.h \
+    src/surf/fasthessian.h \
+    src/exports.h \
+    src/settings.h \
+    src/about.h \
+    src/dialogsnapframes.h \
+    src/processthread.h
 
-FORMS    += mainwindow.ui \
-    exports.ui \
-    settings.ui \
-    about.ui \
-    dialogsnapframes.ui
+FORMS    += forms/mainwindow.ui \
+    forms/exports.ui \
+    forms/settings.ui \
+    forms/about.ui \
+    forms/dialogsnapframes.ui
 
 INCLUDEPATH += D:\OpenCV2.3MinGW\include\
 
