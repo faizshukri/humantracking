@@ -7,6 +7,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "effects.h"
+#include "settings.h"
 
 class processThread : public QThread
 {
@@ -49,6 +50,7 @@ private:
     cv::VideoCapture *capture;
     cv::VideoWriter *writer;
     Effects *effect;
+    Settings *setting;
 
 signals:
     void currentFrame(int);

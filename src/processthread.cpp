@@ -19,6 +19,7 @@ processThread::processThread(QObject *parent, cv::VideoCapture *cap, string file
     cur(0)
 {
     this->effect = new Effects();
+    this->setting = new Settings(0);
     this->capture = cap;
     this->fileName = fileName;
 
@@ -83,7 +84,7 @@ void processThread::run(){
                     writer->operator <<( img );
                 } else { //prevent emit if writer is on
                     emit currentFrame(j, img);
-                    msleep((unsigned long)this->fps);
+                    msleep((unsigned long)this->setting->getVideoFrame());
                 }
             }
         }

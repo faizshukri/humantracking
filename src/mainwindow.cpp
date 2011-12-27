@@ -55,7 +55,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionAbout_Us, SIGNAL(triggered()), aboutUs, SLOT(open()));
     connect(ui->actionCapture_all_frames, SIGNAL(triggered()), this, SLOT(toggleCaptureFrames()));
 
-
 }
 
 MainWindow::~MainWindow()
