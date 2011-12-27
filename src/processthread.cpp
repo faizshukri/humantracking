@@ -88,6 +88,7 @@ void processThread::run(){
                     emit currentFrame(j, img);
                     msleep((unsigned long)Settings::getInstance(0)->getVideoFrame());
                 }
+
             }
         }
 
@@ -98,12 +99,8 @@ void processThread::run(){
 
 void processThread::destroy()
 {
-    //this->destroyed(this);
-    //this->quit();
     this->stop = true;
-    //this->setTerminationEnabled(true);
     this->terminate();
-    //this->wait();
 }
 
 void processThread::setValueJ(int val){

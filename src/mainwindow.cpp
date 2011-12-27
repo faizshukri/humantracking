@@ -152,15 +152,17 @@ void MainWindow::toggleHog(bool state)
 }
 
 void MainWindow::toggleCaptureFrame(){
-    this->captureFrame = true;
+   this->captureFrame = true;
 }
 
 void MainWindow::toggleCaptureFrames(){
 
 
-    this->curFrame = 0;
+    //this->curFrame = 0;
     this->capture->set(CV_CAP_PROP_POS_FRAMES, 0);
-    this->captureFrames = true;
+    mThread->setValueJ(0);
+
+    //this->captureFrames = true;
 
     QDateTime timestem = QDateTime::currentDateTime();
     this->folderPath = this->settings->getSnapPath() + "/" + (timestem.toString("yy-MM-dd hh-mm-ss"));
@@ -193,6 +195,7 @@ void MainWindow::setTimeline(int val){
 }
 
 void MainWindow::saveToFolder(Mat &img){
+    this->captureFrame = false;
     QDateTime timestem = QDateTime::currentDateTime();
     string path = this->settings->getSnapPath().toStdString() + "/" + (timestem.toString("yy-MM-dd hh-mm-ss")).toStdString() + ".jpg";
     cv::imwrite(path, img);
@@ -200,7 +203,6 @@ void MainWindow::saveToFolder(Mat &img){
     msgBox.setText("The frame has been saved.");
     msgBox.setWindowTitle("Information");
     msgBox.exec();
-    this->captureFrame = false;
 }
 
 void MainWindow::snapAllFrames(Mat &img){
@@ -219,6 +221,7 @@ void MainWindow::initEffectAndGui(){
     qRegisterMetaType<AMAT>("Mat");
 
     connect(this->mThread, SIGNAL(currentFrame(int,Mat)), this, SLOT(displayResult(int,Mat)));
+    //connect(this->mThread, SIGNAL(currentFrame(int)), this, SLOT(set))
     connect(ui->radioSurf, SIGNAL(toggled(bool)), this, SLOT(toggleSurf(bool)));
     connect(ui->radioHog, SIGNAL(toggled(bool)), this, SLOT(toggleHog(bool)));
     connect(ui->checkEdge, SIGNAL(toggled(bool)), this, SLOT(toggleEdge(bool)));
@@ -241,17 +244,11 @@ void MainWindow::loadFile(){
         QMutex mutex;
         mutex.lock();
         if(this->hasVideo){
-            //this->mThread->stop = true;
             this->mThread->destroy();
-            //delete this->mThread;
-//            disconnect(this->mThread, SIGNAL(currentFrame(int,Mat)), this, SLOT(displayResult(int,Mat)));
-//            disconnect(ui->radioSurf, SIGNAL(toggled(bool)), this, SLOT(toggleSurf(bool)));
-//            disconnect(ui->radioHog, SIGNAL(toggled(bool)), this, SLOT(toggleHog(bool)));
-//            QThreadPool::globalInstance()->~QObject();
             delete this->mThread;
-            //delete this->capture;
+            delete this->capture;
             this->mThread = 0;
-            //this->capture = 0;
+            this->capture = 0;
         }
         mutex.unlock();
 
@@ -314,8 +311,9 @@ void MainWindow::setInitialProp(){
 
 void MainWindow::displayResult(int cur, Mat img)
 {
+    if(this->captureFrame){ this->saveToFolder(img); } //if user snap a frame, save it the play as usual
     ui->labelDisplay->setPixmap(QPixmap::fromImage(QImage(img.data,img.cols, img.rows, img.step, QImage::Format_RGB888)).scaled(ui->labelDisplay->size(), Qt::KeepAspectRatio));
     ui->slideTimeline->setValue(cur);
     ui->labelTimeline->setText(QString::number(cur) + "/" + QString::number(this->totalFrame) + "\n" + QString::number(cur / 30) + "/" + QString::number((int)this->totalFrame/30));
+    this->curFrame = cur;
 }
-

@@ -67,8 +67,10 @@ public:
         this->aThread->start();
     }
 
+
 private:
     QThread *aThread;
+
 };
 
 #endif // PROCESSTHREAD_H
