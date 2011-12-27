@@ -41,6 +41,9 @@ void processThread::run(){
 
         for(int j = pauseAt; j <= this->capture->get(CV_CAP_PROP_FRAME_COUNT) && !this->stop; j++){
 
+            if(this->stop)
+                break;
+
             if(this->pause){
                 this->pauseAt = j;
                 break;
@@ -97,9 +100,10 @@ void processThread::destroy()
 {
     //this->destroyed(this);
     //this->quit();
-    this->setTerminationEnabled(true);
+    this->stop = true;
+    //this->setTerminationEnabled(true);
     this->terminate();
-    this->wait();
+    //this->wait();
 }
 
 void processThread::setValueJ(int val){

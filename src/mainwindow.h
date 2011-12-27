@@ -30,8 +30,11 @@ public:
 
 protected slots:
     void toggleFlip(bool);
+    void toggleFlipHor(bool);
+    void toggleFlipVer(bool);
     void toggleDetectHuman(bool);
     void toggleEdge(bool);
+    void toggleEdgeInvert(bool);
     void togglePlayPause();
     void setThresh(int);
     void setThresh(QString);

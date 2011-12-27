@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent) :
     captureFrames(false),
     hasVideo(false)
 {
-   // this->_timer = new QTimer(this);
     ui->setupUi(this);
     ui->txtThresh->setValidator(new QIntValidator(0, 100, this));
     ui->txtThresh->setFixedWidth(30);
@@ -27,17 +26,11 @@ MainWindow::MainWindow(QWidget *parent) :
     toggleFlip(ui->checkFlip->isChecked());
 
     //Connect all the element
-    connect(ui->checkFlip, SIGNAL(toggled(bool)), this, SLOT(toggleFlip(bool)));
-    connect(ui->checkEdge, SIGNAL(toggled(bool)), this, SLOT(toggleEdge(bool)));
     connect(ui->checkHuman, SIGNAL(toggled(bool)), this, SLOT(toggleDetectHuman(bool)));
- //   connect(ui->checkEdgeInvert, SIGNAL(toggled(bool)), this, SLOT());
-    connect(ui->txtThresh, SIGNAL(textChanged(QString)), this, SLOT(setThresh(QString)));
-    connect(ui->slideThresh, SIGNAL(sliderMoved(int)), this, SLOT(setThresh(int)));
-    //connect(this->_timer, SIGNAL(timeout()), this, SLOT(timerTick()));
-    connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(loadFile()));
     connect(ui->slideTimeline, SIGNAL(sliderMoved(int)), this, SLOT(setTimeline(int)));
     connect(ui->btnSnap, SIGNAL(clicked()), this, SLOT(toggleCaptureFrame()));
     connect(ui->btnPlayPause, SIGNAL(clicked()), this, SLOT(togglePlayPause()));
+    connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(loadFile()));
 
     //Check the effect setting
 
@@ -78,14 +71,57 @@ void MainWindow::toggleDetectHuman(bool state){
 
 
 void MainWindow::toggleEdge(bool state){
-    if(state) ui->groupThresh->show();
-    else ui->groupThresh->hide();
+    if(state){
+        ui->groupThresh->show();
+        mThread->edge = true;
+        if(ui->checkEdgeInvert->isChecked()) mThread->edgeInvert = true;
+    } else {
+        ui->groupThresh->hide();
+        mThread->edge = false;
+        mThread->edgeInvert = false;
+    }
+}
+
+void MainWindow::toggleEdgeInvert(bool state){
+    if(state) mThread->edgeInvert = true;
+    else mThread->edgeInvert = false;
 }
 
 void MainWindow::toggleFlip(bool state){
-    if(state) ui->groupFlip->show();
-    else ui->groupFlip->hide();
+    if(state){
+        ui->groupFlip->show();
+        if(!ui->checkFlipHor->isChecked() && !ui->checkFlipVer->isChecked()){ mThread->flip = false; }
+        else { mThread->flip = true; }
+    } else {
+        mThread->flip = false;
+        ui->groupFlip->hide();
+    }
 }
+
+void MainWindow::toggleFlipHor(bool state)
+{
+    if(state){
+         mThread->flip = true;
+        if(ui->checkFlipVer->isChecked()) { mThread->flipCode = -1; }  //Both
+        else { mThread->flipCode = 1; } //Hor only
+    } else {
+        if(ui->checkFlipVer->isChecked()) { mThread->flip = true; mThread->flipCode = 0; } //Ver only
+        else { mThread->flip = false; }
+    }
+}
+
+void MainWindow::toggleFlipVer(bool state)
+{
+    if(state){
+         mThread->flip = true;
+        if(ui->checkFlipHor->isChecked()){ mThread->flipCode = -1; } //Both
+        else { mThread->flipCode = 0; } //Ver only
+    } else {
+        if(ui->checkFlipHor->isChecked()) { mThread->flip = true; mThread->flipCode = 1; } //Hor only
+        else { mThread->flip = false; }
+    }
+}
+
 
 void MainWindow::togglePlayPause(){
     if(!this->mThread->pause){
@@ -97,6 +133,22 @@ void MainWindow::togglePlayPause(){
         ui->btnPlayPause->setIcon(QIcon(":/images/pause"));
     }
 
+}
+
+void MainWindow::toggleSurf(bool state)
+{
+    if(state && ui->checkHuman->isChecked())
+        mThread->surf = true;
+    else
+        mThread->surf = false;
+}
+
+void MainWindow::toggleHog(bool state)
+{
+    if(state && ui->checkHuman->isChecked())
+        mThread->hog = true;
+    else
+        mThread->hog = false;
 }
 
 void MainWindow::toggleCaptureFrame(){
@@ -126,10 +178,12 @@ void MainWindow::toggleCaptureFrames(){
 
 void MainWindow::setThresh(int val){
     ui->txtThresh->setText(QString::number(val));
+    mThread->edgeThresh = val;
 }
 
 void MainWindow::setThresh(QString val){
     ui->slideThresh->setValue(val.toInt());
+    mThread->edgeThresh = val.toInt();
 }
 
 void MainWindow::setTimeline(int val){
@@ -157,79 +211,6 @@ void MainWindow::snapAllFrames(Mat &img){
     emit displayCurProgress(this->curFrame, this->totalFrame);
 }
 
-//void timerTick2(){
-
-//    cv::Mat img;
-
-//    this->capture.read(img);
-
-//    //this->capture >> img;
-//    if(img.data){
-
-//            //Check if capture all frames is set and cur frame is at initial 0 position
-//            if(this->captureFrames && this->curFrame == 0){
-//                 this->capture.read(img);
-//                 ui->labelDisplay->setPixmap(QPixmap::fromImage(QImage(img.data,img.cols, img.rows, img.step, QImage::Format_RGB888)).scaled(ui->labelDisplay->size(), Qt::KeepAspectRatio));
-//                 ui->slideTimeline->setValue(0);
-//                 ui->labelTimeline->setText(QString::number(this->curFrame) + "/" + QString::number(this->totalFrame) + "\n" + QString::number((int)this->curFrame / 30) + "/" + QString::number((int)this->totalFrame/30));
-//            }
-
-//            //Check Human Detect state
-//            if(ui->checkHuman->isChecked() && ui->radioSurf->isChecked()){
-//                effect->SurfD(img);
-//            } else if(ui->checkHuman->isChecked() && ui->radioHog->isChecked()){
-//                effect->HogD(img);
-//            }
-
-//            //Check Edge Detection state
-//            if(ui->checkEdge->isChecked() && ui->checkEdgeInvert->isChecked()){
-//                effect->Edge(img, img, ui->slideThresh->value(), true);
-//            } else if(ui->checkEdge->isChecked()){
-//                effect->Edge(img, img, ui->slideThresh->value(), false);
-//            }
-
-//            //Check Flip state
-//            if(ui->checkFlip->isChecked() && ui->checkFlipHor->isChecked() && ui->checkFlipVer->isChecked()){
-//                effect->Flip(img, img, -1); //Both
-//            } else if(ui->checkFlip->isChecked() && ui->checkFlipVer->isChecked()){
-//                effect->Flip(img, img, 0); //Ver
-//            } else if(ui->checkFlip->isChecked()  && ui->checkFlipHor->isChecked()){
-//                effect->Flip(img, img, 1); //Hor
-//            }
-
-//            //Check Capture Frame State
-//            if(this->captureFrame){
-//                this->saveToFolder(img);
-//            }
-
-//            //capture all frame if captureframes is set and curframe % 30 = 0
-//            if(this->captureFrames){
-//                this->snapAllFrames(img);
-//                for(int i = 0; i < this->settings->getFrameToSkip(); i++) this->capture.read(img);
-//                this->curFrame += this->settings->getFrameToSkip();
-//                //this->capture.set(CV_CAP_PROP_POS_FRAMES, (double)this->curFrame);
-//            }
-
-//            //If capture all is set, freeze the display label
-//            if(!this->captureFrames){
-//                ui->labelDisplay->setPixmap(QPixmap::fromImage(QImage(img.data,img.cols, img.rows, img.step, QImage::Format_RGB888)).scaled(ui->labelDisplay->size(), Qt::KeepAspectRatio));
-//                ui->slideTimeline->setValue(curFrame);
-//                ui->labelTimeline->setText(QString::number(this->curFrame) + "/" + QString::number(this->totalFrame) + "\n" + QString::number((int)this->curFrame / 30) + "/" + QString::number((int)this->totalFrame/30));
-//                ++curFrame; //Next frame
-
-//            }
-
-//    } else {
-//        if(this->captureFrames){
-//            this->captureFrames = false;
-//            this->capture.set(CV_CAP_PROP_POS_FRAMES, 1);
-//            this->curFrame = 0;
-//        }
-//        if(this->dialogSnaps->isVisible())
-//            this->dialogSnaps->close();
-//    }
-
-//}
 
 //Connect all the effect button and display that want to be send to thread
 void MainWindow::initEffectAndGui(){
@@ -240,16 +221,17 @@ void MainWindow::initEffectAndGui(){
     connect(this->mThread, SIGNAL(currentFrame(int,Mat)), this, SLOT(displayResult(int,Mat)));
     connect(ui->radioSurf, SIGNAL(toggled(bool)), this, SLOT(toggleSurf(bool)));
     connect(ui->radioHog, SIGNAL(toggled(bool)), this, SLOT(toggleHog(bool)));
+    connect(ui->checkEdge, SIGNAL(toggled(bool)), this, SLOT(toggleEdge(bool)));
+    connect(ui->checkEdgeInvert, SIGNAL(toggled(bool)), this, SLOT(toggleEdgeInvert(bool)));
+    connect(ui->slideThresh, SIGNAL(valueChanged(int)), this, SLOT(setThresh(int)));
+    connect(ui->txtThresh, SIGNAL(textChanged(QString)), this, SLOT(setThresh(QString)));
+    connect(ui->checkFlip, SIGNAL(toggled(bool)), this, SLOT(toggleFlip(bool)));
+    connect(ui->checkFlipHor, SIGNAL(toggled(bool)), this, SLOT(toggleFlipHor(bool)));
+    connect(ui->checkFlipVer, SIGNAL(toggled(bool)), this, SLOT(toggleFlipVer(bool)));
 
 }
 
 void MainWindow::loadFile(){
-//    this->_timer->stop();
-    //Check if the thread already run
-//    if(mThread->isRunning()){
-//        delete mThread;
-//        //mThread = 0;
-//    }
 
     this->curFrame = 0;
     const QString path = QFileDialog::getOpenFileName(this, "Select files", "", "Video Files (*.avi)");
@@ -260,15 +242,15 @@ void MainWindow::loadFile(){
         mutex.lock();
         if(this->hasVideo){
             //this->mThread->stop = true;
-            //this->mThread->destroy();
+            this->mThread->destroy();
             //delete this->mThread;
-            disconnect(this->mThread, SIGNAL(currentFrame(int,Mat)), this, SLOT(displayResult(int,Mat)));
-            disconnect(ui->radioSurf, SIGNAL(toggled(bool)), this, SLOT(toggleSurf(bool)));
-            disconnect(ui->radioHog, SIGNAL(toggled(bool)), this, SLOT(toggleHog(bool)));
-            QThreadPool::globalInstance()->releaseThread();
+//            disconnect(this->mThread, SIGNAL(currentFrame(int,Mat)), this, SLOT(displayResult(int,Mat)));
+//            disconnect(ui->radioSurf, SIGNAL(toggled(bool)), this, SLOT(toggleSurf(bool)));
+//            disconnect(ui->radioHog, SIGNAL(toggled(bool)), this, SLOT(toggleHog(bool)));
+//            QThreadPool::globalInstance()->~QObject();
             delete this->mThread;
-            delete this->capture;
-            //this->mThread = 0;
+            //delete this->capture;
+            this->mThread = 0;
             //this->capture = 0;
         }
         mutex.unlock();
@@ -337,18 +319,3 @@ void MainWindow::displayResult(int cur, Mat img)
     ui->labelTimeline->setText(QString::number(cur) + "/" + QString::number(this->totalFrame) + "\n" + QString::number(cur / 30) + "/" + QString::number((int)this->totalFrame/30));
 }
 
-void MainWindow::toggleSurf(bool state)
-{
-    if(state && ui->checkHuman->isChecked())
-        mThread->surf = true;
-    else
-        mThread->surf = false;
-}
-
-void MainWindow::toggleHog(bool state)
-{
-    if(state && ui->checkHuman->isChecked())
-        mThread->hog = true;
-    else
-        mThread->hog = false;
-}
