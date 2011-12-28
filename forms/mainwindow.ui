@@ -235,7 +235,16 @@
     <property name="title">
      <string>Files</string>
     </property>
+    <widget class="QMenu" name="menuOpen_Directory">
+     <property name="title">
+      <string>Open Directory</string>
+     </property>
+     <addaction name="actionSnapshot"/>
+     <addaction name="actionExport"/>
+     <addaction name="actionExtract_Points"/>
+    </widget>
     <addaction name="actionOpen_File"/>
+    <addaction name="menuOpen_Directory"/>
     <addaction name="actionExports"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -328,6 +337,21 @@
   <action name="actionCapture_all_frames">
    <property name="text">
     <string>Capture all frames</string>
+   </property>
+  </action>
+  <action name="actionSnapshot">
+   <property name="text">
+    <string>Snapshot</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>Export</string>
+   </property>
+  </action>
+  <action name="actionExtract_Points">
+   <property name="text">
+    <string>Extract Points</string>
    </property>
   </action>
  </widget>

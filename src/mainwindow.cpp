@@ -7,6 +7,7 @@
 #include <QDialog>
 #include <QThreadPool>
 #include <QMutex>
+#include <QProcess>
 #include <QProgressBar>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -47,6 +48,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionGlobal_Settings, SIGNAL(triggered()), settings, SLOT(open()));
     connect(ui->actionAbout_Us, SIGNAL(triggered()), aboutUs, SLOT(open()));
     connect(ui->actionCapture_all_frames, SIGNAL(triggered()), this, SLOT(toggleCaptureFrames()));
+    connect(ui->actionExport, SIGNAL(triggered()), this, SLOT(openDirExport()));
+    connect(ui->actionExtract_Points, SIGNAL(triggered()), this,SLOT(openDirExtractPoint()));
+    connect(ui->actionSnapshot, SIGNAL(triggered()), this,SLOT(openDirSnap()));
 
 
 }
@@ -336,4 +340,19 @@ void MainWindow::finishProcess(bool state)
         this->captureFrames = false;
         mThread->destroy();
     }
+}
+
+void MainWindow::openDirExport()
+{
+    QProcess::startDetached("explorer " + this->settings->getExportPath());
+}
+
+void MainWindow::openDirSnap()
+{
+    QProcess::startDetached("explorer " + this->settings->getSnapPath());
+}
+
+void MainWindow::openDirExtractPoint()
+{
+    QProcess::startDetached("explorer " + this->settings->getExtractPointPath());
 }

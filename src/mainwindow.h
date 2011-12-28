@@ -51,6 +51,11 @@ protected slots:
     void initEffectAndGui(); //this is the button connect that must be set after thread be set
     void finishProcess(bool); //Condition where the video has finished processed
 
+    //Open Directory
+    void openDirExport();
+    void openDirSnap();
+    void openDirExtractPoint();
+
 
    // void setTimeline(int);
 
