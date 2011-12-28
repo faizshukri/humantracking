@@ -49,6 +49,7 @@ protected slots:
 
     void displayResult(int, Mat img);
     void initEffectAndGui(); //this is the button connect that must be set after thread be set
+    void finishProcess(bool); //Condition where the video has finished processed
 
 
    // void setTimeline(int);

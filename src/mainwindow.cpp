@@ -157,12 +157,12 @@ void MainWindow::toggleCaptureFrame(){
 
 void MainWindow::toggleCaptureFrames(){
 
-
     //this->curFrame = 0;
     this->capture->set(CV_CAP_PROP_POS_FRAMES, 0);
     mThread->setValueJ(0);
+    mThread->frameToSkip = this->settings->getFrameToSkip();
 
-    //this->captureFrames = true;
+    this->captureFrames = true;
 
     QDateTime timestem = QDateTime::currentDateTime();
     this->folderPath = this->settings->getSnapPath() + "/" + (timestem.toString("yy-MM-dd hh-mm-ss"));
@@ -173,9 +173,15 @@ void MainWindow::toggleCaptureFrames(){
         dir.mkdir(this->folderPath);
     }
 
-    this->dialogSnaps = new dialogSnapFrames(this, this->totalFrame);
+    this->dialogSnaps = new dialogSnapFrames(this, this->totalFrame - (this->totalFrame % this->settings->getFrameToSkip()));
     this->dialogSnaps->setFixedWidth(300);
     this->dialogSnaps->open();
+
+    if(mThread->pause){
+        mThread->pause = false;
+        QThreadPool::globalInstance()->start(new MyTask(this->mThread));
+        ui->btnPlayPause->setIcon(QIcon(":/images/pause"));
+    }
 }
 
 void MainWindow::setThresh(int val){
@@ -210,6 +216,7 @@ void MainWindow::snapAllFrames(Mat &img){
     string fileName = this->folderPath.toStdString() + "/" + QString::number(this->curFrame).toStdString() + ".jpg";
     cv::imwrite(fileName, img);
 
+    //to update to the progress dialog
     emit displayCurProgress(this->curFrame, this->totalFrame);
 }
 
@@ -221,6 +228,7 @@ void MainWindow::initEffectAndGui(){
     qRegisterMetaType<AMAT>("Mat");
 
     connect(this->mThread, SIGNAL(currentFrame(int,Mat)), this, SLOT(displayResult(int,Mat)));
+    connect(this->mThread, SIGNAL(finishProcess(bool)), this, SLOT(finishProcess(bool)));
     //connect(this->mThread, SIGNAL(currentFrame(int)), this, SLOT(set))
     connect(ui->radioSurf, SIGNAL(toggled(bool)), this, SLOT(toggleSurf(bool)));
     connect(ui->radioHog, SIGNAL(toggled(bool)), this, SLOT(toggleHog(bool)));
@@ -261,14 +269,11 @@ void MainWindow::loadFile(){
 
         this->totalFrame = (int)this->capture->get(CV_CAP_PROP_FRAME_COUNT);
         ui->slideTimeline->setMaximum(this->totalFrame);
-     //   this->_timer->start(this->settings->getVideoFrame());
         ui->btnPlayPause->setIcon(QIcon(":/images/pause"));
 
         this->setInitialProp();
-        //this->mThread->start();
 
         this->hasVideo = true;
-        //mThread->stop = false;
 
         QThreadPool::globalInstance()->start(new MyTask(this->mThread));
     }
@@ -311,9 +316,24 @@ void MainWindow::setInitialProp(){
 
 void MainWindow::displayResult(int cur, Mat img)
 {
+    this->curFrame = cur;
+
+    if(this->captureFrames){
+        this->snapAllFrames(img);
+    }
+    ui->checkFlip->setText(QString::number(cur));
     if(this->captureFrame){ this->saveToFolder(img); } //if user snap a frame, save it the play as usual
     ui->labelDisplay->setPixmap(QPixmap::fromImage(QImage(img.data,img.cols, img.rows, img.step, QImage::Format_RGB888)).scaled(ui->labelDisplay->size(), Qt::KeepAspectRatio));
     ui->slideTimeline->setValue(cur);
     ui->labelTimeline->setText(QString::number(cur) + "/" + QString::number(this->totalFrame) + "\n" + QString::number(cur / 30) + "/" + QString::number((int)this->totalFrame/30));
-    this->curFrame = cur;
+
+}
+
+//Condition where the video has been finish processing
+void MainWindow::finishProcess(bool state)
+{
+    if (state){
+        ui->checkFlip->setText("Finished");
+        dialogSnaps->setButtonEnable(true);
+    }
 }

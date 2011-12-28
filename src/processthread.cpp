@@ -16,7 +16,8 @@ processThread::processThread(QObject *parent, cv::VideoCapture *cap, string file
     pause(false),
     pauseAt(1),
     move(false),
-    cur(0)
+    cur(0),
+    frameToSkip(0)
 {
     this->effect = new Effects();
     this->capture = cap;
@@ -39,7 +40,7 @@ void processThread::run(){
 
     Mat img;
 
-        for(int j = pauseAt; j <= this->capture->get(CV_CAP_PROP_FRAME_COUNT) && !this->stop; j++){
+        for(int j = pauseAt; j <= this->capture->get(CV_CAP_PROP_FRAME_COUNT); j++){
 
             if(this->stop)
                 break;
@@ -89,8 +90,17 @@ void processThread::run(){
                     msleep((unsigned long)Settings::getInstance(0)->getVideoFrame());
                 }
 
+                for(int i = 0; i < frameToSkip - 1; i++){
+                    this->capture->operator >>( img );
+                    j++;
+                    if(!img.data) break;
+                }
+
             }
         }
+
+        emit finishProcess(true);
+        this->frameToSkip = 0; //reset back frame to skip to 0
 
         if(isWrite) //if writer needed
             this->writer->~VideoWriter();

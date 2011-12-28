@@ -42,6 +42,7 @@ public:
     int pauseAt; //if user pause, where it is
     int cur;
     bool move;
+    int frameToSkip;
 
 public slots:
     void setValueJ(int);
@@ -54,6 +55,7 @@ private:
 signals:
     void currentFrame(int);
     void currentFrame(int, Mat);
+    void finishProcess(bool);
 
 public slots:
 

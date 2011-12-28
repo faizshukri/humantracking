@@ -17,6 +17,7 @@ public:
 
 public slots:
     void setCurProgress(int, int);
+    void setButtonEnable(bool);
 
 private:
     Ui::dialogSnapFrames *ui;
