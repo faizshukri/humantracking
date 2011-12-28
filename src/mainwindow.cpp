@@ -128,7 +128,7 @@ void MainWindow::togglePlayPause(){
         this->mThread->pause = true;
         ui->btnPlayPause->setIcon(QIcon(":/images/play"));
     } else {
-        mThread->pause = false;
+        this->mThread->pause = false;
         QThreadPool::globalInstance()->start(new MyTask(this->mThread));
         ui->btnPlayPause->setIcon(QIcon(":/images/pause"));
     }

@@ -98,8 +98,8 @@ void processThread::run(){
 
             }
         }
-
-        this->stop = true;
+        if(!this->pause)
+            this->stop = true;
 
         this->frameToSkip = 0; //reset back frame to skip to 0
 
