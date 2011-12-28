@@ -321,7 +321,6 @@ void MainWindow::displayResult(int cur, Mat img)
     if(this->captureFrames){
         this->snapAllFrames(img);
     }
-    ui->checkFlip->setText(QString::number(cur));
     if(this->captureFrame){ this->saveToFolder(img); } //if user snap a frame, save it the play as usual
     ui->labelDisplay->setPixmap(QPixmap::fromImage(QImage(img.data,img.cols, img.rows, img.step, QImage::Format_RGB888)).scaled(ui->labelDisplay->size(), Qt::KeepAspectRatio));
     ui->slideTimeline->setValue(cur);
@@ -333,7 +332,8 @@ void MainWindow::displayResult(int cur, Mat img)
 void MainWindow::finishProcess(bool state)
 {
     if (state){
-        ui->checkFlip->setText("Finished");
         dialogSnaps->setButtonEnable(true);
+        this->captureFrames = false;
+        mThread->destroy();
     }
 }

@@ -93,13 +93,14 @@ void processThread::run(){
                 for(int i = 0; i < frameToSkip - 1; i++){
                     this->capture->operator >>( img );
                     j++;
-                    if(!img.data) break;
+                    if(!img.data){ stop = true; break; }
                 }
 
             }
         }
 
-        emit finishProcess(true);
+        this->stop = true;
+
         this->frameToSkip = 0; //reset back frame to skip to 0
 
         if(isWrite) //if writer needed
