@@ -40,3 +40,17 @@ MinGW Compiler Version 0.4 Alpha 1
 Licensing/Legal
 ===============
 This mod is released under the GNU General Public License.<br>The GPL can be found here: http://www.gnu.org/licenses/gpl.txt
+
+
+==========
+Changelog
+==========
+[30/12/2011]
+* Can't reBrowse after the first video finish played	fixed	remove this->mthread->destroy in loadVideo mainwindow.cpp
+* Can't continue playing video when video were pause	fixed	add checking pause condition before emit finishProcess signal in processThread
+* Can't play again the video				fixed 	add checking pause condition false and cur frame equal to totalframe on button clicked
+* Problem when user move the video slider		still problem	function set(CV_CAP_PROP_POS_FRAMES) from OpenCV is still problem. We plan to deprecate this feature.
+* Can't replay if user cancel to load new video file	fixed	move the assignment curFrame to inside the checking scope in mainWindow
+* Can't capture all frames when video is finish played	fixed	add condition in toggleCaptureFrames for video that was finish display
+* Can't rebrowse when the video still playing		open
+* Can't re export					open
