@@ -21,7 +21,7 @@ public:
     void SurfD(cv::Mat &img);
     void HogD(cv::Mat &img);
 
-    bool savePoint; //Save the points. 0 for Surf, 1 for Hog
+    //bool savePoint; //Save the points. 0 for Surf, 1 for Hog
 
 signals:
     void vectorOfExtractPoint(IpVec);

@@ -44,9 +44,9 @@ public:
     int cur;
     bool move;
     int frameToSkip;
+    void setValueJ(int);
 
 public slots:
-    void setValueJ(int);
     void resendExtractPoint(IpVec);
     void resendExtractPoint(vector<Rect>);
 

@@ -1,8 +1,7 @@
 #include "effects.h"
 
 Effects::Effects(QObject *parent) :
-    QObject(parent),
-    savePoint(-1)
+    QObject(parent)
 {
 }
 

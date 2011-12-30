@@ -27,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Connect all the element
     connect(ui->checkHuman, SIGNAL(toggled(bool)), this, SLOT(toggleDetectHuman(bool)));
-    connect(ui->slideTimeline, SIGNAL(sliderMoved(int)), this, SLOT(setTimeline(int)));
     connect(ui->btnSnap, SIGNAL(clicked()), this, SLOT(toggleCaptureFrame()));
     connect(ui->btnPlayPause, SIGNAL(clicked()), this, SLOT(togglePlayPause()));
     connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(loadFile()));
@@ -37,7 +36,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->exports = new Exports(this);
     this->settings = Settings::getInstance(this);
     this->aboutUs = new About(this);
-    this->effect = new Effects(this);
 
 
     aboutUs->setFixedSize(400, 180);
@@ -129,13 +127,25 @@ void MainWindow::toggleFlipVer(bool state)
 
 
 void MainWindow::togglePlayPause(){
-    if(!this->mThread->pause){
+
+    //if the video is finish playing and user press restart
+    if (!this->mThread->pause && this->curFrame == this->totalFrame){
+        this->curFrame = 1;
+        this->capture->set(CV_CAP_PROP_POS_FRAMES,0);
+        //this->mThread->setValueJ(0);
+        this->mThread->stop = false;
+        this->mThread->pauseAt = 1;
+        ui->btnPlayPause->setIcon(QIcon(":/images/pause"));
+        QThreadPool::globalInstance()->start(new MyTask(this->mThread));
+            //if the video is still playing and user press pause
+    } else if(!this->mThread->pause){
         this->mThread->pause = true;
         ui->btnPlayPause->setIcon(QIcon(":/images/play"));
-    } else {
+        //if the video is at pause condition and user press play
+    }  else {
         this->mThread->pause = false;
-        QThreadPool::globalInstance()->start(new MyTask(this->mThread));
         ui->btnPlayPause->setIcon(QIcon(":/images/pause"));
+        QThreadPool::globalInstance()->start(new MyTask(this->mThread));
     }
 
 }
@@ -162,11 +172,9 @@ void MainWindow::toggleCaptureFrame(){
 
 void MainWindow::toggleCaptureFrames(){
 
-    //this->curFrame = 0;
     this->capture->set(CV_CAP_PROP_POS_FRAMES, 0);
-    mThread->setValueJ(0);
-    mThread->frameToSkip = this->settings->getFrameToSkip();
-
+    this->mThread->setValueJ(0);
+    this->mThread->frameToSkip = this->settings->getFrameToSkip();
     this->captureFrames = true;
 
     QDateTime timestem = QDateTime::currentDateTime();
@@ -182,11 +190,13 @@ void MainWindow::toggleCaptureFrames(){
     this->dialogSnaps->setFixedWidth(300);
     this->dialogSnaps->open();
 
-    if(mThread->pause){
-        mThread->pause = false;
-        QThreadPool::globalInstance()->start(new MyTask(this->mThread));
+    if(this->mThread->pause || (!this->mThread->pause && this->curFrame == this->totalFrame)){
         ui->btnPlayPause->setIcon(QIcon(":/images/pause"));
+        this->mThread->pause = false;
+        this->mThread->stop = false;
+        QThreadPool::globalInstance()->start(new MyTask(this->mThread));
     }
+
 }
 
 void MainWindow::setThresh(int val){
@@ -197,12 +207,6 @@ void MainWindow::setThresh(int val){
 void MainWindow::setThresh(QString val){
     ui->slideThresh->setValue(val.toInt());
     mThread->edgeThresh = val.toInt();
-}
-
-void MainWindow::setTimeline(int val){
-    //mThread->pauseAt = val;
-    emit setCurPos(val);
-    curFrame = val;
 }
 
 void MainWindow::saveToFolder(Mat &img){
@@ -230,14 +234,11 @@ void MainWindow::snapAllFrames(Mat &img){
 void MainWindow::initEffectAndGui(){
     //To passing object Mat via signal and slot
     typedef Mat AMAT;
-    //typedef vector<Ipoint> abu;
     qRegisterMetaType<AMAT>("Mat");
-    //qRegisterMetaType< vector<abu> >("vector<abu>");
     qRegisterMetaType<IpVec>("IpVec");
 
     connect(this->mThread, SIGNAL(currentFrame(int,Mat)), this, SLOT(displayResult(int,Mat)));
     connect(this->mThread, SIGNAL(finishProcess(bool)), this, SLOT(finishProcess(bool)));
-    //connect(this->mThread, SIGNAL(currentFrame(int)), this, SLOT(set))
     connect(ui->radioSurf, SIGNAL(toggled(bool)), this, SLOT(toggleSurf(bool)));
     connect(ui->radioHog, SIGNAL(toggled(bool)), this, SLOT(toggleHog(bool)));
     connect(ui->checkEdge, SIGNAL(toggled(bool)), this, SLOT(toggleEdge(bool)));
@@ -252,20 +253,18 @@ void MainWindow::initEffectAndGui(){
 
 void MainWindow::loadFile(){
 
-    this->curFrame = 0;
     const QString path = QFileDialog::getOpenFileName(this, "Select files", "", "Video Files (*.avi)");
     if(!path.isEmpty()){
 
         //Check if the thread already run
         if(this->hasVideo){
-            this->mThread->destroy();
             delete this->mThread;
             delete this->capture;
             this->mThread = 0;
             this->capture = 0;
         }
 
-
+        this->curFrame = 0;
         this->capture = new cv::VideoCapture(path.toStdString());
         this->mThread = new processThread(this, this->capture, false, 0, "");
 
@@ -287,32 +286,25 @@ void MainWindow::loadFile(){
 void MainWindow::setInitialProp(){
     //Check Human Detection
     if(ui->checkHuman->isChecked() && ui->radioSurf->isChecked()){
-        //effect->SurfD(img);
         this->mThread->surf = true;
     } else if(ui->checkHuman->isChecked() && ui->radioHog->isChecked()){
-       // effect->HogD(img);
         this->mThread->hog = true;
     }
 
     //Check Edge Detection state
     if(ui->checkEdge->isChecked() && ui->checkEdgeInvert->isChecked()){
-        //effect->Edge(img, img, ui->slideThresh->value(), true);
         this->mThread->edge = true; this->mThread->edgeInvert = true; this->mThread->edgeThresh = ui->slideThresh->value();
     } else if(ui->checkEdge->isChecked()){
-        //effect->Edge(img, img, ui->slideThresh->value(), false);
         this->mThread->edge = true; this->mThread->edgeInvert = true;
     }
 
     //Check Flip state
     if(ui->checkFlip->isChecked() && ui->checkFlipHor->isChecked() && ui->checkFlipVer->isChecked()){
-        //effect->Flip(img, img, -1); //Both
-        this->mThread->flip = true; this->mThread->flipCode = -1;
+        this->mThread->flip = true; this->mThread->flipCode = -1; //Both
     } else if(ui->checkFlip->isChecked() && ui->checkFlipVer->isChecked()){
-        //effect->Flip(img, img, 0); //Ver
-        this->mThread->flip = true; this->mThread->flipCode = 0;
+        this->mThread->flip = true; this->mThread->flipCode = 0; //Ver
     } else if(ui->checkFlip->isChecked()  && ui->checkFlipHor->isChecked()){
-        //effect->Flip(img, img, 1); //Hor
-        this->mThread->flip = true; this->mThread->flipCode = 1;
+        this->mThread->flip = true; this->mThread->flipCode = 1; //Hor
     }
 
     this->mThread->fps = this->settings->getVideoFrame();
@@ -326,6 +318,7 @@ void MainWindow::displayResult(int cur, Mat img)
     if(this->captureFrames){
         this->snapAllFrames(img);
     }
+
     if(this->captureFrame){ this->saveToFolder(img); } //if user snap a frame, save it then play as usual
     ui->labelDisplay->setPixmap(QPixmap::fromImage(QImage(img.data,img.cols, img.rows, img.step, QImage::Format_RGB888)).scaled(ui->labelDisplay->size(), Qt::KeepAspectRatio));
     ui->slideTimeline->setValue(cur);
@@ -336,12 +329,17 @@ void MainWindow::displayResult(int cur, Mat img)
 //Condition where the video has been finish processing
 void MainWindow::finishProcess(bool state)
 {
+    //force the cur frame to be same with total frame. to enable restart after snap all frame
+    this->curFrame = this->totalFrame;
+    ui->slideTimeline->setValue(this->curFrame);
+  //  ++this->curFrame;
     if (state){
-        //dialogSnaps->setButtonEnable(true);
-        this->captureFrames = false;
-        mThread->destroy();
-        delete mThread;
-        mThread = 0;
+        ui->btnPlayPause->setIcon(QIcon(":/images/repeat"));
+
+        if(this->captureFrames){
+            dialogSnaps->setButtonEnable(true);
+            this->captureFrames = false;
+        }
     }
 }
 

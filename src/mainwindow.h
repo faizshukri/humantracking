@@ -37,7 +37,7 @@ protected slots:
     void togglePlayPause();
     void setThresh(int);
     void setThresh(QString);
-    void setTimeline(int);
+    //void setTimeline(int);
     void toggleCaptureFrame();
     void toggleCaptureFrames();
 
@@ -67,7 +67,6 @@ private:
  //   QTimer *_timer;
     cv::VideoCapture *capture;
 
-    Effects *effect;
     Exports *exports;
     About *aboutUs;
     Settings *settings;

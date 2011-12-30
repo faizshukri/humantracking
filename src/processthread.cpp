@@ -16,7 +16,6 @@ processThread::processThread(QObject *parent, cv::VideoCapture *cap, bool writeV
     stop(false),
     pause(false),
     pauseAt(1),
-    move(false),
     cur(0),
     frameToSkip(0),
     count(0),
@@ -53,7 +52,7 @@ processThread::processThread(QObject *parent, cv::VideoCapture *cap, bool writeV
     }
 
     //If user move the slider in main window
-    connect(parent, SIGNAL(setCurPos(int)), this, SLOT(setValueJ(int)));
+    //connect(parent, SIGNAL(setCurPos(int)), this, SLOT(setValueJ(int)));
 }
 
 //Destructor
@@ -65,10 +64,10 @@ processThread::~processThread(){
 
     if(exportPoints){
         for(int i = 0; i < this->capture->get(CV_CAP_PROP_FRAME_COUNT); i++){
-            delete [] points[i];
+            delete points[i];
             points[i] = 0;
         }
-        delete [] points;
+        delete points;
         points = 0;
     }
     this->capture->release();
@@ -93,7 +92,7 @@ void processThread::run(){
 
             if(move){
                 move = false;
-                j = cur;
+                j = this->cur;
                 this->capture->set(CV_CAP_PROP_POS_FRAMES, j);
             }
 
@@ -151,7 +150,8 @@ void processThread::run(){
             this->writer->~VideoWriter();
         }
 
-        emit finishProcess(true);
+        if(!this->pause)
+            emit finishProcess(true);
 
 }
 
