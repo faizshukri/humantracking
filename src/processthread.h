@@ -15,7 +15,7 @@ class processThread : public QThread
     Q_OBJECT
 public:
     explicit processThread(QObject *parent = 0, cv::VideoCapture *cap = 0,
-                           bool writeVideo = false, bool extractPoint = false, string fileName = "");
+                           bool writeVideo = false, int extractPoint = 0, string fileName = "");
     ~processThread();
     void run();
     void destroy();
@@ -47,6 +47,8 @@ public:
 
 public slots:
     void setValueJ(int);
+    void resendExtractPoint(IpVec);
+    void resendExtractPoint(vector<Rect>);
 
 private:
     cv::VideoCapture *capture;
@@ -55,16 +57,14 @@ private:
     processPoints **points;
     int count; //use to count current frame
     bool isWrite; //is writer needed?
-    bool exportPoints; //check if exportsPoint is set. use this at exports.cpp. only when user check extract point
+    int exportPoints; //check if exportsPoint is set. 0 = not set. 1 = surf. 2 = hog. use this at exports.cpp. only when user check extract point
 
 signals:
     void currentFrame(int);
     void currentFrame(int, Mat);
     void finishProcess(bool);
-    void numOfExtPointSurf(IpVec);
+    //void numOfExtPointSurf(IpVec);
 
-public slots:
-    void showNumOfExtPointSurf(IpVec);
 
 };
 

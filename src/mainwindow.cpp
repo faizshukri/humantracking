@@ -237,7 +237,6 @@ void MainWindow::initEffectAndGui(){
 
     connect(this->mThread, SIGNAL(currentFrame(int,Mat)), this, SLOT(displayResult(int,Mat)));
     connect(this->mThread, SIGNAL(finishProcess(bool)), this, SLOT(finishProcess(bool)));
-    connect(this->mThread, SIGNAL(numOfExtPointSurf(IpVec)), this, SLOT(showNumOfExtPointSurf(IpVec)));
     //connect(this->mThread, SIGNAL(currentFrame(int)), this, SLOT(set))
     connect(ui->radioSurf, SIGNAL(toggled(bool)), this, SLOT(toggleSurf(bool)));
     connect(ui->radioHog, SIGNAL(toggled(bool)), this, SLOT(toggleHog(bool)));
@@ -268,7 +267,7 @@ void MainWindow::loadFile(){
 
 
         this->capture = new cv::VideoCapture(path.toStdString());
-        this->mThread = new processThread(this, this->capture, false, false, "");
+        this->mThread = new processThread(this, this->capture, false, 0, "");
 
         //Connect all the effect button
         this->initEffectAndGui();
@@ -359,9 +358,4 @@ void MainWindow::openDirSnap()
 void MainWindow::openDirExtractPoint()
 {
     QProcess::startDetached("explorer " + this->settings->getExtractPointPath());
-}
-
-void MainWindow::showNumOfExtPointSurf(IpVec val)
-{
-    ui->checkFlip->setText(QString::number((int) val.size()));
 }

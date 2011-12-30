@@ -27,6 +27,8 @@ protected slots:
     void toggleEdge(bool);
     void toggleFlip(bool);
     void toggleHumanDetec(bool);
+    void toggleHog(bool);
+    void toggleSurf(bool);
     void setThresh(int);
     void setThresh(QString);
     void timerTick();

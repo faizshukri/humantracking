@@ -3,10 +3,20 @@
 processPoints::processPoints(QObject *parent, IpVec point, QString fileName) :
     QObject(parent)
 {
-//    QString abu = QString::number(this->points.at(2).dx);
     this->points = point;
-//    float b = this->points.at(0).x;
     this->myFile = new QFile(fileName); // filename is including the frame no (current frame)
+    processSurf();
+}
+
+processPoints::processPoints(QObject *parent, vector<Rect> point, QString fileName) :
+    QObject(parent)
+{
+    this->rectHog = point;
+    this->myFile = new QFile(fileName); // filename is including the frame no (current frame)
+    processHog();
+}
+
+void processPoints::processSurf(){
     this->myFile->open(QIODevice::WriteOnly | QIODevice::Text);
     this->out = new QTextStream(this->myFile);
 
@@ -17,6 +27,19 @@ processPoints::processPoints(QObject *parent, IpVec point, QString fileName) :
                                "\n");
     }
     this->myFile->close();
+}
+
+void processPoints::processHog(){
+    this->myFile->open(QIODevice::WriteOnly | QIODevice::Text);
+    this->out = new QTextStream(this->myFile);
+
+    for(int i = 0; i < this->rectHog.size(); i++){
+        this->out->operator <<( QString::number(this->rectHog.at(i).height) + "," + QString::number(this->rectHog.at(i).width) + "," +
+                                QString::number(this->rectHog.at(i).x) + "," + QString::number(this->rectHog.at(i).y) + "," +
+                                "\n");
+    }
+    this->myFile->close();
+
 }
 
 processPoints::~processPoints(){

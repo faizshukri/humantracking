@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>552</width>
-    <height>547</height>
+    <width>599</width>
+    <height>549</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -159,7 +159,7 @@
           <item>
            <widget class="QCheckBox" name="checkPoints">
             <property name="text">
-             <string>Save Interest Points</string>
+             <string>Extract Points</string>
             </property>
            </widget>
           </item>

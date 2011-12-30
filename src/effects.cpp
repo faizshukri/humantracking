@@ -38,7 +38,8 @@ void Effects::SurfD(cv::Mat &img){
 
      img = cv::Mat(&img2);
 
-     emit numOfExtPointSurf(ipts);
+     //emit numOfExtPointSurf(ipts);
+     emit vectorOfExtractPoint(ipts);
 }
 
 void Effects::HogD(Mat &img){
@@ -71,4 +72,6 @@ void Effects::HogD(Mat &img){
                r.height = cvRound(r.height*0.8);
                rectangle(img, r.tl(), r.br(), Scalar(0,255,0), 2);
     }
+
+    emit vectorOfExtractPoint(found);
 }

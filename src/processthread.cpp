@@ -1,7 +1,7 @@
 #include "processthread.h"
 #include <QDir>
 
-processThread::processThread(QObject *parent, cv::VideoCapture *cap, bool writeVideo, bool extractPoint, string fileName) :
+processThread::processThread(QObject *parent, cv::VideoCapture *cap, bool writeVideo, int extractPoint, string fileName) :
     QThread(parent),
     flip(false),
     flipCode(0),
@@ -27,9 +27,20 @@ processThread::processThread(QObject *parent, cv::VideoCapture *cap, bool writeV
     this->capture = cap;
 
     //If the user check the export point, then initialize the object points
-    if(this->exportPoints){
+    if(this->exportPoints != 0){
         int totalFrame = this->capture->get(CV_CAP_PROP_FRAME_COUNT);
         this->points = new processPoints*[totalFrame];
+
+        //SURF
+        if(this->exportPoints == 1){
+            qRegisterMetaType<IpVec>("IpVec");
+            //passing vector from effect to process point
+            connect(this->effect, SIGNAL(vectorOfExtractPoint(IpVec)), this, SLOT(resendExtractPoint(IpVec)));
+        } else if(this->exportPoints == 2){ //HOG
+            qRegisterMetaType< vector<Rect> >("vector<Rect>");
+            //passing vector from effect to process point
+            connect(this->effect, SIGNAL(vectorOfExtractPoint(vector<Rect>)), this, SLOT(resendExtractPoint(vector<Rect>)));
+        }
     }
 
     //If the user check the need the video writer, then initialize the object writer
@@ -41,11 +52,8 @@ processThread::processThread(QObject *parent, cv::VideoCapture *cap, bool writeV
         }
     }
 
-
-    qRegisterMetaType<IpVec>("IpVec");
-
+    //If user move the slider in main window
     connect(parent, SIGNAL(setCurPos(int)), this, SLOT(setValueJ(int)));
-    connect(this->effect, SIGNAL(numOfExtPointSurf(IpVec)), this, SLOT(showNumOfExtPointSurf(IpVec)));
 }
 
 //Destructor
@@ -92,7 +100,8 @@ void processThread::run(){
             emit currentFrame(j);
             this->capture->operator >>( img );
 
-            if(img.data){
+            if(!img.data){ break; }
+            else {
 
                 //============ START Effect ============//
 
@@ -130,8 +139,7 @@ void processThread::run(){
                     j++;
                     if(!img.data){ stop = true; break; }
                 }
-
-            } else { break; }
+            }
         }
 
         if(!this->pause)
@@ -158,16 +166,37 @@ void processThread::setValueJ(int val){
     this->cur = val;
 }
 
-void processThread::showNumOfExtPointSurf(IpVec val)
+void processThread::resendExtractPoint(IpVec val)
 {
-    QString extractPointDir = QString::fromStdString(this->fileName) + "_POINTS\\";
-    QDir path(extractPointDir);
-    if(!path.exists(extractPointDir)){
-        path.mkdir(extractPointDir);
-    }
+    //SURF
+    if(this->exportPoints == 1){
 
-    if(this->exportPoints){
+        //Create directory if not exist
+        QString extractPointDir = QString::fromStdString(this->fileName) + "_SURF\\";
+        QDir path(extractPointDir);
+        if(!path.exists(extractPointDir))
+            path.mkdir(extractPointDir);
+
+        //Process the points
         this->points[this->count] = new processPoints(this, val, extractPointDir + QString::number(this->count) + ".txt");
+
     }
+    ++count;
+}
+
+void processThread::resendExtractPoint(vector <Rect> val){
+    //HOG
+    if(this->exportPoints == 2){
+
+           //Create directory if not exist
+           QString extractPointDir = QString::fromStdString(this->fileName) + "_HOG\\";
+           QDir path(extractPointDir);
+           if(!path.exists(extractPointDir))
+               path.mkdir(extractPointDir);
+
+           //Process the points
+           this->points[this->count] = new processPoints(this, val, extractPointDir + QString::number(this->count) + ".txt");
+
+       }
     ++count;
 }

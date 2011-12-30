@@ -31,6 +31,9 @@ Exports::Exports(QWidget *parent) :
     ui->txtThresh->setValidator(new QIntValidator(0,100, this));
     ui->txtThresh->setFixedWidth(30);
 
+    if(!ui->radioHog->isChecked() || !ui->radioSurf->isChecked()) ui->checkPoints->setEnabled(false);
+    else ui->checkPoints->setEnabled(true);
+
     connect(ui->btnCancel, SIGNAL(clicked()), this, SLOT(close()));
     connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(browseVideos()));
     connect(ui->btnExport, SIGNAL(clicked()), this, SLOT(timerTick()));
@@ -38,6 +41,8 @@ Exports::Exports(QWidget *parent) :
     connect(ui->checkEdge, SIGNAL(toggled(bool)), this, SLOT(toggleEdge(bool)));
     connect(ui->checkFlip, SIGNAL(toggled(bool)), this, SLOT(toggleFlip(bool)));
     connect(ui->checkHuman, SIGNAL(toggled(bool)), this, SLOT(toggleHumanDetec(bool)));
+    connect(ui->radioSurf, SIGNAL(toggled(bool)), this, SLOT(toggleSurf(bool)));
+    connect(ui->radioHog, SIGNAL(toggled(bool)), this, SLOT(toggleHog(bool)));
     connect(ui->slideThresh, SIGNAL(valueChanged(int)), this, SLOT(setThresh(int)));
     connect(ui->txtThresh, SIGNAL(textChanged(QString)), this, SLOT(setThresh(QString)));
 
@@ -84,6 +89,21 @@ void Exports::toggleHumanDetec(bool state){
     if(state) ui->groupHumanDetect->show();
     else ui->groupHumanDetect->hide();
 }
+
+void Exports::toggleHog(bool state)
+{
+    if(state && !ui->checkPoints->isEnabled()){
+        ui->checkPoints->setEnabled(true);
+    }
+}
+
+void Exports::toggleSurf(bool state)
+{
+    if(state && !ui->checkPoints->isEnabled()){
+        ui->checkPoints->setEnabled(true);
+    }
+}
+
 
 void Exports::reBrowse(){
     for(int i = 0; i < this->count; i++){
@@ -159,17 +179,20 @@ void Exports::timerTick(){ //if user start export by press button export
     ui->btnBrowse->setDisabled(true);
 
     cv::Mat img;
+    this->curFrame += this->count;
 
     for(int i = 0; i < this->count; i++){
 
         this->capture[i]->operator >>( img );
         if(!img.data) break;
+
         string path = this->setting->getExportPath().toStdString() + "\\" + this->fileName.at(i).toStdString();
        // this->writer = new cv::VideoWriter(path, CV_FOURCC('D','I','V','X'), this->capture[i]->get(CV_CAP_PROP_FPS), img.size(), true);
 
         //if checkbox extract interest point is checked
-        bool extractPoint = false;
-        if(ui->checkPoints->isChecked()) extractPoint = true;
+        int extractPoint = 0;
+        if(ui->radioSurf->isChecked() && ui->checkPoints->isChecked()) extractPoint = 1;
+        else if(ui->radioHog->isChecked() && ui->checkPoints->isChecked()) extractPoint = 2;
 
         //Initialize thread object
         this->thread[i] = new processThread(this,this->capture[i], true, extractPoint, path);
@@ -218,3 +241,4 @@ void Exports::setInitialProp(processThread *athread){
     }
 
 }
+

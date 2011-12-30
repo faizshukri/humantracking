@@ -24,7 +24,8 @@ public:
     bool savePoint; //Save the points. 0 for Surf, 1 for Hog
 
 signals:
-    void numOfExtPointSurf(IpVec);
+    void vectorOfExtractPoint(IpVec);
+    void vectorOfExtractPoint(vector <Rect>);
 
 public slots:
 

@@ -55,9 +55,6 @@ protected slots:
     void openDirSnap();
     void openDirExtractPoint();
 
-    void showNumOfExtPointSurf(IpVec); //to show num of extract point created by surf
-
-
    // void setTimeline(int);
 
 signals:
