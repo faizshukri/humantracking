@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>536</width>
-    <height>430</height>
+    <width>552</width>
+    <height>547</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -153,6 +153,13 @@
            <widget class="QRadioButton" name="radioSurf">
             <property name="text">
              <string>Surf Descriptor</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkPoints">
+            <property name="text">
+             <string>Save Interest Points</string>
             </property>
            </widget>
           </item>

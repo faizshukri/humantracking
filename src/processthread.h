@@ -8,12 +8,15 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include "effects.h"
 #include "settings.h"
+#include "processpoints.h"
 
 class processThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit processThread(QObject *parent = 0, cv::VideoCapture *cap = 0, string fileName = "");
+    explicit processThread(QObject *parent = 0, cv::VideoCapture *cap = 0,
+                           bool writeVideo = false, bool extractPoint = false, string fileName = "");
+    ~processThread();
     void run();
     void destroy();
 
@@ -34,8 +37,6 @@ public:
     bool surf;
 
     //Other Setting
-    bool isWrite; //is writer needed?
-    void setWriter(bool);
     string fileName;
     int fps;
     bool pause;
@@ -51,13 +52,19 @@ private:
     cv::VideoCapture *capture;
     cv::VideoWriter *writer;
     Effects *effect;
+    processPoints **points;
+    int count; //use to count current frame
+    bool isWrite; //is writer needed?
+    bool exportPoints; //check if exportsPoint is set. use this at exports.cpp. only when user check extract point
 
 signals:
     void currentFrame(int);
     void currentFrame(int, Mat);
     void finishProcess(bool);
+    void numOfExtPointSurf(IpVec);
 
 public slots:
+    void showNumOfExtPointSurf(IpVec);
 
 };
 

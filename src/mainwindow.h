@@ -8,7 +8,6 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include "effects.h"
 #include "exports.h"
 #include "settings.h"
 #include "about.h"
@@ -55,6 +54,8 @@ protected slots:
     void openDirExport();
     void openDirSnap();
     void openDirExtractPoint();
+
+    void showNumOfExtPointSurf(IpVec); //to show num of extract point created by surf
 
 
    // void setTimeline(int);

@@ -6,7 +6,6 @@
 #include <QMessageBox>
 #include <QDialog>
 #include <QThreadPool>
-#include <QMutex>
 #include <QProcess>
 #include <QProgressBar>
 
@@ -38,7 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->exports = new Exports(this);
     this->settings = Settings::getInstance(this);
     this->aboutUs = new About(this);
-    this->effect = new Effects();
+    this->effect = new Effects(this);
+
 
     aboutUs->setFixedSize(400, 180);
     //set of action
@@ -59,6 +59,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 
 void MainWindow::toggleDetectHuman(bool state){
 
@@ -229,10 +230,14 @@ void MainWindow::snapAllFrames(Mat &img){
 void MainWindow::initEffectAndGui(){
     //To passing object Mat via signal and slot
     typedef Mat AMAT;
+    //typedef vector<Ipoint> abu;
     qRegisterMetaType<AMAT>("Mat");
+    //qRegisterMetaType< vector<abu> >("vector<abu>");
+    qRegisterMetaType<IpVec>("IpVec");
 
     connect(this->mThread, SIGNAL(currentFrame(int,Mat)), this, SLOT(displayResult(int,Mat)));
     connect(this->mThread, SIGNAL(finishProcess(bool)), this, SLOT(finishProcess(bool)));
+    connect(this->mThread, SIGNAL(numOfExtPointSurf(IpVec)), this, SLOT(showNumOfExtPointSurf(IpVec)));
     //connect(this->mThread, SIGNAL(currentFrame(int)), this, SLOT(set))
     connect(ui->radioSurf, SIGNAL(toggled(bool)), this, SLOT(toggleSurf(bool)));
     connect(ui->radioHog, SIGNAL(toggled(bool)), this, SLOT(toggleHog(bool)));
@@ -253,8 +258,6 @@ void MainWindow::loadFile(){
     if(!path.isEmpty()){
 
         //Check if the thread already run
-        QMutex mutex;
-        mutex.lock();
         if(this->hasVideo){
             this->mThread->destroy();
             delete this->mThread;
@@ -262,11 +265,10 @@ void MainWindow::loadFile(){
             this->mThread = 0;
             this->capture = 0;
         }
-        mutex.unlock();
 
 
         this->capture = new cv::VideoCapture(path.toStdString());
-        this->mThread = new processThread(this, this->capture, "");
+        this->mThread = new processThread(this, this->capture, false, false, "");
 
         //Connect all the effect button
         this->initEffectAndGui();
@@ -325,7 +327,7 @@ void MainWindow::displayResult(int cur, Mat img)
     if(this->captureFrames){
         this->snapAllFrames(img);
     }
-    if(this->captureFrame){ this->saveToFolder(img); } //if user snap a frame, save it the play as usual
+    if(this->captureFrame){ this->saveToFolder(img); } //if user snap a frame, save it then play as usual
     ui->labelDisplay->setPixmap(QPixmap::fromImage(QImage(img.data,img.cols, img.rows, img.step, QImage::Format_RGB888)).scaled(ui->labelDisplay->size(), Qt::KeepAspectRatio));
     ui->slideTimeline->setValue(cur);
     ui->labelTimeline->setText(QString::number(cur) + "/" + QString::number(this->totalFrame) + "\n" + QString::number(cur / 30) + "/" + QString::number((int)this->totalFrame/30));
@@ -336,9 +338,11 @@ void MainWindow::displayResult(int cur, Mat img)
 void MainWindow::finishProcess(bool state)
 {
     if (state){
-        dialogSnaps->setButtonEnable(true);
+        //dialogSnaps->setButtonEnable(true);
         this->captureFrames = false;
         mThread->destroy();
+        delete mThread;
+        mThread = 0;
     }
 }
 
@@ -355,4 +359,9 @@ void MainWindow::openDirSnap()
 void MainWindow::openDirExtractPoint()
 {
     QProcess::startDetached("explorer " + this->settings->getExtractPointPath());
+}
+
+void MainWindow::showNumOfExtPointSurf(IpVec val)
+{
+    ui->checkFlip->setText(QString::number((int) val.size()));
 }

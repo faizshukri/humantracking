@@ -1,6 +1,7 @@
 #include "processthread.h"
+#include <QDir>
 
-processThread::processThread(QObject *parent, cv::VideoCapture *cap, string fileName) :
+processThread::processThread(QObject *parent, cv::VideoCapture *cap, bool writeVideo, bool extractPoint, string fileName) :
     QThread(parent),
     flip(false),
     flipCode(0),
@@ -10,37 +11,69 @@ processThread::processThread(QObject *parent, cv::VideoCapture *cap, string file
     hog(false),
     surf(false),
     writer(0),
-    isWrite(false),
+    isWrite(writeVideo),
     fps(0),
     stop(false),
     pause(false),
     pauseAt(1),
     move(false),
     cur(0),
-    frameToSkip(0)
+    frameToSkip(0),
+    count(0),
+    exportPoints(extractPoint),
+    fileName(fileName)
 {
-    this->effect = new Effects();
+    this->effect = new Effects(this);
     this->capture = cap;
-    this->fileName = fileName;
 
-    connect(parent, SIGNAL(setCurPos(int)), this, SLOT(setValueJ(int)));
-}
+    //If the user check the export point, then initialize the object points
+    if(this->exportPoints){
+        int totalFrame = this->capture->get(CV_CAP_PROP_FRAME_COUNT);
+        this->points = new processPoints*[totalFrame];
+    }
 
-void processThread::setWriter(bool state){
-    if(state){
-        this->isWrite = true;
+    //If the user check the need the video writer, then initialize the object writer
+    if(this->isWrite){
         Mat img;
         this->capture->operator >>( img );
-        if(img.data)
-        this->writer = new cv::VideoWriter(this->fileName, CV_FOURCC('D','I','V','X'),this->capture->get(CV_CAP_PROP_FPS),img.size(),true);
+        if(img.data){
+            this->writer = new cv::VideoWriter(this->fileName, CV_FOURCC('D','I','V','X'),this->capture->get(CV_CAP_PROP_FPS),img.size(),true);
+        }
     }
+
+
+    qRegisterMetaType<IpVec>("IpVec");
+
+    connect(parent, SIGNAL(setCurPos(int)), this, SLOT(setValueJ(int)));
+    connect(this->effect, SIGNAL(numOfExtPointSurf(IpVec)), this, SLOT(showNumOfExtPointSurf(IpVec)));
 }
+
+//Destructor
+processThread::~processThread(){
+    if(isWrite){
+        delete writer;
+        writer = 0;
+    }
+
+    if(exportPoints){
+        for(int i = 0; i < this->capture->get(CV_CAP_PROP_FRAME_COUNT); i++){
+            delete [] points[i];
+            points[i] = 0;
+        }
+        delete [] points;
+        points = 0;
+    }
+    this->capture->release();
+    this->destroy();
+}
+
 
 void processThread::run(){
 
     Mat img;
+    int totalFrame = this->capture->get(CV_CAP_PROP_FRAME_COUNT);
 
-        for(int j = pauseAt; j <= this->capture->get(CV_CAP_PROP_FRAME_COUNT); j++){
+        for(int j = pauseAt; j <= totalFrame; j++){
 
             if(this->stop)
                 break;
@@ -67,8 +100,10 @@ void processThread::run(){
                     //Check Human Detect state
                     if(this->surf){
                         effect->SurfD(img);
+                        //if(this->savePoint) effect->savePoint = 0;
                     } else if(this->hog){
                         effect->HogD(img);
+                        //if(this->savePoint) effect->savePoint = 1;
                     }
 
                     //Check Edge Detection state
@@ -96,15 +131,19 @@ void processThread::run(){
                     if(!img.data){ stop = true; break; }
                 }
 
-            }
+            } else { break; }
         }
+
         if(!this->pause)
             this->stop = true;
 
         this->frameToSkip = 0; //reset back frame to skip to 0
 
-        if(isWrite) //if writer needed
+        if(isWrite){ //if writer needed
             this->writer->~VideoWriter();
+        }
+
+        emit finishProcess(true);
 
 }
 
@@ -117,4 +156,18 @@ void processThread::destroy()
 void processThread::setValueJ(int val){
     move = true;
     this->cur = val;
+}
+
+void processThread::showNumOfExtPointSurf(IpVec val)
+{
+    QString extractPointDir = QString::fromStdString(this->fileName) + "_POINTS\\";
+    QDir path(extractPointDir);
+    if(!path.exists(extractPointDir)){
+        path.mkdir(extractPointDir);
+    }
+
+    if(this->exportPoints){
+        this->points[this->count] = new processPoints(this, val, extractPointDir + QString::number(this->count) + ".txt");
+    }
+    ++count;
 }

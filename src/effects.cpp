@@ -1,9 +1,13 @@
 #include "effects.h"
-#include "surf/surflib.h"
-#include "surf/kmeans.h"
 
-Effects::Effects()
+Effects::Effects(QObject *parent) :
+    QObject(parent),
+    savePoint(-1)
 {
+}
+
+Effects::~Effects(){
+
 }
 
 void Effects::Flip(cv::Mat &img, cv::Mat &out, int code){
@@ -33,6 +37,8 @@ void Effects::SurfD(cv::Mat &img){
      drawIpoints(&img2, ipts);
 
      img = cv::Mat(&img2);
+
+     emit numOfExtPointSurf(ipts);
 }
 
 void Effects::HogD(Mat &img){

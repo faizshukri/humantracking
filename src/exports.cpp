@@ -103,7 +103,7 @@ void Exports::reBrowse(){
     ui->progressBarTotal->setValue(0);
 }
 
-void Exports::browseVideos(){
+void Exports::browseVideos(){ //if user click button browse
 
     QStringList path = QFileDialog::getOpenFileNames(this,"Select video files to export", "", "Video Files (*.avi)");
 
@@ -121,7 +121,6 @@ void Exports::browseVideos(){
         for(int i = 0; i < this->count; i++){
             this->capture[i] = new cv::VideoCapture(path.at(i).toStdString());
             this->totalProgress += capture[i]->get(CV_CAP_PROP_FRAME_COUNT);
-
             QFileInfo pathInfo( path.at(i) );
             this->fileName.append(pathInfo.fileName());
         }
@@ -154,7 +153,7 @@ void Exports::setThresh(QString val){
 }
 
 
-void Exports::timerTick(){
+void Exports::timerTick(){ //if user start export by press button export
 
     showProgressBar(true);
     ui->btnBrowse->setDisabled(true);
@@ -168,7 +167,14 @@ void Exports::timerTick(){
         string path = this->setting->getExportPath().toStdString() + "\\" + this->fileName.at(i).toStdString();
        // this->writer = new cv::VideoWriter(path, CV_FOURCC('D','I','V','X'), this->capture[i]->get(CV_CAP_PROP_FPS), img.size(), true);
 
-        this->thread[i] = new processThread(this,this->capture[i],path);
+        //if checkbox extract interest point is checked
+        bool extractPoint = false;
+        if(ui->checkPoints->isChecked()) extractPoint = true;
+
+        //Initialize thread object
+        this->thread[i] = new processThread(this,this->capture[i], true, extractPoint, path);
+
+
         connect(this->thread[i], SIGNAL(currentFrame(int)), this, SLOT(setCurFrame(int)));
         setInitialProp(this->thread[i]);
 
@@ -211,6 +217,4 @@ void Exports::setInitialProp(processThread *athread){
         athread->flip = true; athread->flipCode = 1;
     }
 
-    //we need the writer
-    athread->setWriter( true );
 }

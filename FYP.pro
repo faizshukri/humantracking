@@ -22,7 +22,8 @@ SOURCES += src/main.cpp \
     src/settings.cpp \
     src/about.cpp \
     src/dialogsnapframes.cpp \
-    src/processthread.cpp
+    src/processthread.cpp \
+    src/processpoints.cpp
 
 HEADERS  += src/mainwindow.h \
     src/effects.h \
@@ -38,7 +39,8 @@ HEADERS  += src/mainwindow.h \
     src/settings.h \
     src/about.h \
     src/dialogsnapframes.h \
-    src/processthread.h
+    src/processthread.h \
+    src/processpoints.h
 
 FORMS    += forms/mainwindow.ui \
     forms/exports.ui \
@@ -48,32 +50,38 @@ FORMS    += forms/mainwindow.ui \
 
 INCLUDEPATH += D:\OpenCV2.3MinGW\include\
 
-LIBS += -LD:\OpenCV2.3MinGW\lib \
-    -llibopencv_core231 \
-    -llibopencv_highgui231 \
-    -llibopencv_imgproc231 \
-    -llibopencv_features2d231 \
-    -llibopencv_calib3d231 \
-    -llibopencv_flann231 \
-    -llibopencv_video231 \
-    -llibopencv_objdetect231 \
-    -llibopencv_ml231 \
-    -llibopencv_contrib231
-
 #LIBS += -LD:\OpenCV2.3MinGW\lib \
-#    -llibopencv_core231d \
-#    -llibopencv_highgui231d \
-#    -llibopencv_imgproc231d \
-#    -llibopencv_features2d231d \
-#    -llibopencv_calib3d231d \
-#    -llibopencv_flann231d \
-#    -llibopencv_video231d \
-#    -llibopencv_objdetect231d \
-#    -llibopencv_ml231d \
-#    -llibopencv_contrib231d
+#    -llibopencv_core231 \
+#    -llibopencv_highgui231 \
+#    -llibopencv_imgproc231 \
+#    -llibopencv_features2d231 \
+#    -llibopencv_calib3d231 \
+#    -llibopencv_flann231 \
+#    -llibopencv_video231 \
+#    -llibopencv_objdetect231 \
+#    -llibopencv_ml231 \
+#    -llibopencv_contrib231
+
+LIBS += -LD:\OpenCV2.3MinGW\lib \
+    -llibopencv_core231d \
+    -llibopencv_highgui231d \
+    -llibopencv_imgproc231d \
+    -llibopencv_features2d231d \
+    -llibopencv_calib3d231d \
+    -llibopencv_flann231d \
+    -llibopencv_video231d \
+    -llibopencv_objdetect231d \
+    -llibopencv_ml231d \
+    -llibopencv_contrib231d
 
 RESOURCES += \
     Resources.qrc
+
+
+
+
+
+
 
 
 

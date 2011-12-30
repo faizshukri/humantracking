@@ -14,10 +14,11 @@ class dialogSnapFrames : public QDialog
 public:
     explicit dialogSnapFrames(QWidget *parent = 0, int progMax = 100);
     ~dialogSnapFrames();
+    void setButtonEnable(bool);
 
 public slots:
     void setCurProgress(int, int);
-    void setButtonEnable(bool);
+
 
 private:
     Ui::dialogSnapFrames *ui;
