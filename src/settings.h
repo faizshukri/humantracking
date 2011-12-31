@@ -17,7 +17,6 @@ public:
     QString getSnapPath();
     QString getExportPath();
     QString getExtractPointPath();
-    int getVideoCodec();
     int getVideoFrame();
     int getFrameToSkip();
     static Settings *getInstance(QWidget *parent);
