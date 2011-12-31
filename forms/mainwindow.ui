@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>621</width>
-    <height>479</height>
+    <width>675</width>
+    <height>481</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,166 +24,107 @@
    </size>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,10">
-    <property name="sizeConstraint">
-     <enum>QLayout::SetDefaultConstraint</enum>
-    </property>
+   <layout class="QVBoxLayout" name="verticalLayout_6">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <item>
-       <widget class="QPushButton" name="btnBrowse">
+       <widget class="QToolButton" name="btnBrowse">
+        <property name="toolTip">
+         <string>Open video file</string>
+        </property>
+        <property name="statusTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
         <property name="text">
-         <string>Browse</string>
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../Resources.qrc">
+          <normaloff>:/images/open</normaloff>:/images/open</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnSnap">
+       <widget class="QToolButton" name="btnSnap">
+        <property name="toolTip">
+         <string>Capture the current frame</string>
+        </property>
         <property name="text">
-         <string>Snapshot</string>
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../Resources.qrc">
+          <normaloff>:/images/capture</normaloff>:/images/capture</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="Line" name="line">
+       <widget class="QToolButton" name="btnSnapAllFrame">
+        <property name="toolTip">
+         <string>Capture all frames for this video</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../Resources.qrc">
+          <normaloff>:/images/capture_all</normaloff>:/images/capture_all</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btnExport">
+        <property name="toolTip">
+         <string>Export videos</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../Resources.qrc">
+          <normaloff>:/images/export</normaloff>:/images/export</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Properties</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="Line" name="line_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="checkFlip">
-        <property name="text">
-         <string>Flip</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupFlip">
-        <property name="title">
-         <string>Properties</string>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <widget class="QCheckBox" name="checkFlipHor">
-           <property name="text">
-            <string>Horizontal</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="checkFlipVer">
-           <property name="text">
-            <string>Vertical</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="checkEdge">
-        <property name="text">
-         <string>Edge Detector</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupThresh">
-        <property name="title">
-         <string>Threshold</string>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="10,1">
-           <item>
-            <widget class="QSlider" name="slideThresh">
-             <property name="maximum">
-              <number>100</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="txtThresh">
-             <property name="text">
-              <string>0</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="checkEdgeInvert">
-           <property name="text">
-            <string>Invert</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="checkHuman">
-        <property name="text">
-         <string>Human Detect</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupAlgorithm">
-        <property name="title">
-         <string>Algorithm</string>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
-         <item>
-          <widget class="QRadioButton" name="radioHog">
-           <property name="text">
-            <string>HOG Descriptor</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="radioSurf">
-           <property name="text">
-            <string>SURF Descriptor</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>20</width>
-          <height>40</height>
+          <width>40</width>
+          <height>20</height>
          </size>
         </property>
        </spacer>
@@ -191,67 +132,219 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,0">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,5">
       <item>
-       <widget class="QLabel" name="labelDisplay">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QPushButton" name="btnPlayPause">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../Resources.qrc">
-            <normaloff>:/images/play</normaloff>:/images/play</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>24</width>
-            <height>24</height>
-           </size>
-          </property>
-          <property name="checkable">
-           <bool>false</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-          <property name="autoRepeat">
-           <bool>false</bool>
-          </property>
-          <property name="autoDefault">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSlider" name="slideTimeline">
-          <property name="tracking">
-           <bool>true</bool>
-          </property>
+         <widget class="Line" name="line">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="labelTimeline">
+         <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>label</string>
+           <string>Properties</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkFlip">
+          <property name="text">
+           <string>Flip</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupFlip">
+          <property name="title">
+           <string>Properties</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <widget class="QCheckBox" name="checkFlipHor">
+             <property name="text">
+              <string>Horizontal</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkFlipVer">
+             <property name="text">
+              <string>Vertical</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkEdge">
+          <property name="text">
+           <string>Edge Detector</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupThresh">
+          <property name="title">
+           <string>Threshold</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="10,1">
+             <item>
+              <widget class="QSlider" name="slideThresh">
+               <property name="maximum">
+                <number>100</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="txtThresh">
+               <property name="text">
+                <string>0</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkEdgeInvert">
+             <property name="text">
+              <string>Invert</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkHuman">
+          <property name="text">
+           <string>Human Detect</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupAlgorithm">
+          <property name="title">
+           <string>Algorithm</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QRadioButton" name="radioHog">
+             <property name="text">
+              <string>HOG Descriptor</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radioSurf">
+             <property name="text">
+              <string>SURF Descriptor</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="6,1">
+        <item>
+         <widget class="QLabel" name="labelDisplay">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="btnPlayPause">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../Resources.qrc">
+              <normaloff>:/images/play</normaloff>:/images/play</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoRepeat">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSlider" name="slideTimeline">
+            <property name="tracking">
+             <bool>true</bool>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTimeline">
+            <property name="text">
+             <string>label</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
@@ -264,7 +357,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>621</width>
+     <width>675</width>
      <height>21</height>
     </rect>
    </property>
@@ -278,7 +371,6 @@
      </property>
      <addaction name="actionSnapshot"/>
      <addaction name="actionExport"/>
-     <addaction name="actionExtract_Points"/>
     </widget>
     <addaction name="actionOpen_File"/>
     <addaction name="menuOpen_Directory"/>
@@ -302,10 +394,6 @@
     <property name="title">
      <string>Videos</string>
     </property>
-    <addaction name="actionPlay"/>
-    <addaction name="actionPause"/>
-    <addaction name="actionStop"/>
-    <addaction name="separator"/>
     <addaction name="actionCapture_current_frame"/>
     <addaction name="actionCapture_all_frames"/>
    </widget>
@@ -314,15 +402,11 @@
    <addaction name="menuVideos"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
+  <widget class="QStatusBar" name="statusBar">
+   <property name="enabled">
     <bool>false</bool>
-   </attribute>
+   </property>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExports">
    <property name="text">
     <string>Exports</string>

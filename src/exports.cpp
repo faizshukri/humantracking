@@ -127,7 +127,9 @@ void Exports::reBrowse(){
 
 void Exports::browseVideos(){ //if user click button browse
 
-    QStringList path = QFileDialog::getOpenFileNames(this,"Select video files to export", "", "Video Files (*.avi)");
+    QSettings env(QSettings::UserScope, "Microsoft", "Windows");
+    env.beginGroup("CurrentVersion/Explorer/Shell Folders");
+    QStringList path = QFileDialog::getOpenFileNames(this,"Select video files to export", env.value("Personal").toString(), "Video Files (*.avi)");
 
     if(!path.isEmpty()){
 
@@ -180,6 +182,14 @@ void Exports::timerTick(){ //if user start export by press button export
 
     showProgressBar(true);
     ui->btnBrowse->setDisabled(true);
+    //If user export the same video as before without re load new video
+    if(this->curFrame !=0){
+        this->curFrame = 0;
+        ui->progressBarTotal->setValue(0);
+        for(int i = 0; i < this->count; i++){
+            this->capture[i]->set(CV_CAP_PROP_POS_FRAMES,0);
+        }
+    }
 
     cv::Mat img;
     this->curFrame += this->count;

@@ -53,7 +53,6 @@ protected slots:
     //Open Directory
     void openDirExport();
     void openDirSnap();
-    void openDirExtractPoint();
 
    // void setTimeline(int);
 

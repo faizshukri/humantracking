@@ -27,7 +27,10 @@ Settings::Settings(QWidget *parent) :
     ui->txtFrameToSkip->setFixedWidth(40);
 
     //Set the settings filename
-    this->FileName = QDir::currentPath() + "/settings.ini";
+
+    QSettings env(QSettings::UserScope, "Microsoft", "Windows");
+    env.beginGroup("CurrentVersion/Explorer/Shell Folders");
+    this->FileName = env.value("Personal").toString() + "/Human Detect and Track/settings.ini";
 
 
    // myProgSetting = new Settings(this);
@@ -37,7 +40,6 @@ Settings::Settings(QWidget *parent) :
     connect(ui->btnSave, SIGNAL(clicked(bool)), this, SLOT(saveSetting(bool)));
     connect(ui->btnReset, SIGNAL(clicked()), this, SLOT(resetDefault()));
     connect(ui->btnBrowseSnap, SIGNAL(clicked()), this, SLOT(browseSnap()));
-    connect(ui->btnBrowsePoint, SIGNAL(clicked()), this, SLOT(browseExtractPoint()));
     connect(ui->btnBrowseExport, SIGNAL(clicked()), this, SLOT(browseExport()));
 
     //Load the application setting file
@@ -74,29 +76,29 @@ int Settings::getFrameToSkip(){
     return settings.value("frame_to_skip").toInt();
 }
 
-QString Settings::getExtractPointPath(){
-    QSettings settings(this->FileName, QSettings::IniFormat, this);
-    return settings.value("point_extract").toString();
-}
 
 void Settings::initDefault(){
 
-    QString dir = QDir::currentPath() + "/exports";
-    QDir path(dir);
-    ui->txtExport->setText(path.toNativeSeparators(dir));
-    if(!path.exists(dir)){
-        path.mkdir(dir);
+    QSettings env(QSettings::UserScope, "Microsoft", "Windows");
+    env.beginGroup("CurrentVersion/Explorer/Shell Folders");
+
+
+    QString orig = env.value("Personal").toString() + "/Human Detect and Track";
+    QDir path(orig);
+    path = QDir(orig);
+    if(!path.exists(orig)){
+        path.mkdir(orig);
     }
 
-    dir = QDir::currentPath() + "/snapshots";
-    ui->txtSnap->setText(path.toNativeSeparators(dir));
+    QString dir = orig + "/exports";
+    ui->txtExport->setText(path.toNativeSeparators(dir));
     path = QDir(dir);
     if(!path.exists(dir)){
         path.mkdir(dir);
     }
 
-    dir = QDir::currentPath() + "/pointextractions";
-    ui->txtExtractPoint->setText(path.toNativeSeparators(dir));
+    dir = orig + "/snapshots";
+    ui->txtSnap->setText(path.toNativeSeparators(dir));
     path = QDir(dir);
     if(!path.exists(dir)){
         path.mkdir(dir);
@@ -113,7 +115,6 @@ void Settings::initUserSetting(){
     ui->txtExport->setText(this->getExportPath());
     ui->txtSnap->setText(this->getSnapPath());
     ui->txtVideoFrame->setText(QString::number(this->getVideoFrame()));
-    ui->txtExtractPoint->setText(this->getExtractPointPath());
     ui->txtFrameToSkip->setText(QString::number(this->getFrameToSkip()));
 }
 
@@ -127,15 +128,10 @@ void Settings::saveSetting(bool click){
     if(!path.exists())
         path.mkdir(ui->txtSnap->text());
 
-    path = QDir(ui->txtExtractPoint->text());
-    if(!path.exists())
-        path.mkdir(ui->txtExtractPoint->text());
-
     QSettings settings(this->FileName, QSettings::IniFormat, this);
 
     settings.setValue("video_frame", ui->txtVideoFrame->text().toInt());
     settings.setValue("export_path", ui->txtExport->text());
-    settings.setValue("point_extract", ui->txtExtractPoint->text());
     settings.setValue("snap_path", ui->txtSnap->text());
     settings.setValue("frame_to_skip", ui->txtFrameToSkip->text().toInt());
 
@@ -162,16 +158,6 @@ void Settings::browseExport(){
     }
 }
 
-void Settings::browseExtractPoint(){
-    QString path = QFileDialog::getExistingDirectory(this, "Select directory", QDir::currentPath());
-    if(!path.isEmpty()){
-        QDir directory(path);
-        directory.toNativeSeparators(path);
-        if(directory.exists()){
-            ui->txtExtractPoint->setText(path);
-        }
-    }
-}
 
 void Settings::browseSnap(){
     QString path = QFileDialog::getExistingDirectory(this, "Select directory", QDir::currentPath());

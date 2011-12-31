@@ -25,25 +25,27 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionCapture_all_frames->setEnabled(false); //Disable on load. no video
     ui->actionCapture_current_frame->setEnabled(false); //Disable on load. no video
     ui->btnSnap->setEnabled(false); //Disable on load. no video
+    ui->btnSnapAllFrame->setEnabled(false);
 
     toggleDetectHuman(ui->checkHuman->isChecked());
     toggleEdge(ui->checkEdge->isChecked());
     toggleFlip(ui->checkFlip->isChecked());
+
+    //Check the effect setting
+    this->exports = new Exports(this);
+    this->settings = Settings::getInstance(this);
+    this->aboutUs = new About(this);
+    aboutUs->setFixedSize(400, 180);
+
 
     //Connect all the element
     connect(ui->checkHuman, SIGNAL(toggled(bool)), this, SLOT(toggleDetectHuman(bool)));
     connect(ui->btnSnap, SIGNAL(clicked()), this, SLOT(toggleCaptureFrame()));
     connect(ui->btnPlayPause, SIGNAL(clicked()), this, SLOT(togglePlayPause()));
     connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(loadFile()));
+    connect(ui->btnSnapAllFrame, SIGNAL(clicked()), this, SLOT(toggleCaptureFrames()));
+    connect(ui->btnExport, SIGNAL(clicked()), exports, SLOT(open()));
 
-    //Check the effect setting
-
-    this->exports = new Exports(this);
-    this->settings = Settings::getInstance(this);
-    this->aboutUs = new About(this);
-
-
-    aboutUs->setFixedSize(400, 180);
     //set of action
     connect(ui->actionCapture_current_frame, SIGNAL(triggered()), this, SLOT(toggleCaptureFrame()));
     connect(ui->actionOpen_File, SIGNAL(triggered()), this, SLOT(loadFile()));
@@ -53,7 +55,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionAbout_Us, SIGNAL(triggered()), aboutUs, SLOT(open()));
     connect(ui->actionCapture_all_frames, SIGNAL(triggered()), this, SLOT(toggleCaptureFrames()));
     connect(ui->actionExport, SIGNAL(triggered()), this, SLOT(openDirExport()));
-    connect(ui->actionExtract_Points, SIGNAL(triggered()), this,SLOT(openDirExtractPoint()));
     connect(ui->actionSnapshot, SIGNAL(triggered()), this,SLOT(openDirSnap()));
 
 }
@@ -273,6 +274,8 @@ void MainWindow::loadFile(){
             ui->actionCapture_current_frame->setEnabled(true);
         if(!ui->btnSnap->isEnabled())
             ui->btnSnap->setEnabled(true);
+        if(!ui->btnSnapAllFrame->isEnabled())
+            ui->btnSnapAllFrame->setEnabled(true);
 
         //Check if the thread already run
         if(this->hasVideo){
@@ -369,9 +372,4 @@ void MainWindow::openDirExport()
 void MainWindow::openDirSnap()
 {
     QProcess::startDetached("explorer " + this->settings->getSnapPath());
-}
-
-void MainWindow::openDirExtractPoint()
-{
-    QProcess::startDetached("explorer " + this->settings->getExtractPointPath());
 }

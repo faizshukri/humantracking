@@ -4,5 +4,9 @@
         <file alias="play">images/play1.png</file>
         <file alias="repeat">images/repeat2.png</file>
         <file alias="icon">images/icon1.ico</file>
+        <file alias="capture">images/capture.png</file>
+        <file alias="capture_all">images/capture_all.png</file>
+        <file alias="export">images/export.png</file>
+        <file alias="open">images/open.png</file>
     </qresource>
 </RCC>
