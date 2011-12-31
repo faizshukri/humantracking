@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     aboutUs->setFixedSize(400, 180);
     //set of action
+    connect(ui->actionCapture_current_frame, SIGNAL(triggered()), this, SLOT(toggleCaptureFrame()));
     connect(ui->actionOpen_File, SIGNAL(triggered()), this, SLOT(loadFile()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionExports, SIGNAL(triggered()), exports, SLOT(open()));
@@ -49,7 +50,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExport, SIGNAL(triggered()), this, SLOT(openDirExport()));
     connect(ui->actionExtract_Points, SIGNAL(triggered()), this,SLOT(openDirExtractPoint()));
     connect(ui->actionSnapshot, SIGNAL(triggered()), this,SLOT(openDirSnap()));
-
 
 }
 
@@ -167,7 +167,10 @@ void MainWindow::toggleHog(bool state)
 }
 
 void MainWindow::toggleCaptureFrame(){
-   this->captureFrame = true;
+    if(this->curFrame == this->totalFrame || this->mThread->pause)
+        QMessageBox::information(this, "Snapshot", "You can't capture screen when video is pause or stop.", QMessageBox::Ok);
+    else
+        this->captureFrame = true;
 }
 
 void MainWindow::toggleCaptureFrames(){
@@ -226,7 +229,7 @@ void MainWindow::snapAllFrames(Mat &img){
     cv::imwrite(fileName, img);
 
     //to update to the progress dialog
-    emit displayCurProgress(this->curFrame, this->totalFrame);
+    emit displayCurProgress(this->curFrame + 1, this->totalFrame);
 }
 
 

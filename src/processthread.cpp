@@ -20,7 +20,8 @@ processThread::processThread(QObject *parent, cv::VideoCapture *cap, bool writeV
     frameToSkip(0),
     count(0),
     exportPoints(extractPoint),
-    fileName(fileName)
+    fileName(fileName),
+    move(false)
 {
     this->effect = new Effects(this);
     this->capture = cap;

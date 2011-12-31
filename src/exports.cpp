@@ -56,7 +56,9 @@ void Exports::setupThread(QThread &thread){
 }
 
 void Exports::setCurFrame(int cur){
+
     this->curFrame++;
+
     ui->progressBarTotal->setValue(this->curFrame);
     if(ui->progressBarTotal->value() == this->totalProgress){
         ui->btnBrowse->setDisabled(false);
@@ -66,6 +68,7 @@ void Exports::setCurFrame(int cur){
             QProcess::startDetached("explorer " + this->setting->getExportPath());
         }
     }
+
 }
 
 Exports::~Exports()
@@ -107,10 +110,9 @@ void Exports::toggleSurf(bool state)
 
 void Exports::reBrowse(){
     for(int i = 0; i < this->count; i++){
-        capture[i]->release();
+        //capture[i]->release();
+        thread[i]->~processThread();
         delete capture[i];
-        delete thread[i];
-
         capture[i] = 0;
         thread[i] = 0;
     }
@@ -146,6 +148,7 @@ void Exports::browseVideos(){ //if user click button browse
         }
 
         ui->progressBarTotal->setMaximum(this->totalProgress);
+        ui->progressBarTotal->setValue(0);
 
         //ui->checkFlip->setText(this->fileName.at(this->count - 1));
 
@@ -196,6 +199,7 @@ void Exports::timerTick(){ //if user start export by press button export
 
         //Initialize thread object
         this->thread[i] = new processThread(this,this->capture[i], true, extractPoint, path);
+        this->thread[i]->pauseAt = 1;
 
 
         connect(this->thread[i], SIGNAL(currentFrame(int)), this, SLOT(setCurFrame(int)));
