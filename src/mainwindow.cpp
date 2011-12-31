@@ -21,6 +21,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->txtThresh->setValidator(new QIntValidator(0, 100, this));
     ui->txtThresh->setFixedWidth(30);
+    ui->btnPlayPause->setEnabled(false); //Disable on load. no video
+    ui->actionCapture_all_frames->setEnabled(false); //Disable on load. no video
+    ui->actionCapture_current_frame->setEnabled(false); //Disable on load. no video
+    ui->btnSnap->setEnabled(false); //Disable on load. no video
+
     toggleDetectHuman(ui->checkHuman->isChecked());
     toggleEdge(ui->checkEdge->isChecked());
     toggleFlip(ui->checkFlip->isChecked());
@@ -258,6 +263,16 @@ void MainWindow::loadFile(){
 
     const QString path = QFileDialog::getOpenFileName(this, "Select files", "", "Video Files (*.avi)");
     if(!path.isEmpty()){
+
+        //Set the important button enabled back after video has been load
+        if(!ui->btnPlayPause->isEnabled())
+            ui->btnPlayPause->setEnabled(true);
+        if(!ui->actionCapture_all_frames->isEnabled())
+            ui->actionCapture_all_frames->setEnabled(true);
+        if(!ui->actionCapture_current_frame->isEnabled())
+            ui->actionCapture_current_frame->setEnabled(true);
+        if(!ui->btnSnap->isEnabled())
+            ui->btnSnap->setEnabled(true);
 
         //Check if the thread already run
         if(this->hasVideo){

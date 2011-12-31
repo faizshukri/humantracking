@@ -9,7 +9,8 @@
 *                                                          *
 ************************************************************/
 
-#include <opencv/highgui.h>
+//#include <opencv/highgui.h>
+#include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <fstream>
 #include <time.h>

@@ -54,13 +54,13 @@ LIBS += -LD:\OpenCV2.3MinGW\lib \
     -llibopencv_core231 \
     -llibopencv_highgui231 \
     -llibopencv_imgproc231 \
-    -llibopencv_features2d231 \
+#    -llibopencv_features2d231 \
     -llibopencv_calib3d231 \
-    -llibopencv_flann231 \
-    -llibopencv_video231 \
+#    -llibopencv_flann231 \
+#    -llibopencv_video231 \
     -llibopencv_objdetect231 \
-    -llibopencv_ml231 \
-    -llibopencv_contrib231
+#    -llibopencv_ml231 \
+#    -llibopencv_contrib231
 
 #LIBS += -LD:\OpenCV2.3MinGW\lib \
 #    -llibopencv_core231d \
@@ -77,7 +77,7 @@ LIBS += -LD:\OpenCV2.3MinGW\lib \
 RESOURCES += \
     Resources.qrc
 
-
+RC_FILE = myapp.rc
 
 
 
