@@ -1,5 +1,6 @@
 #include "dialogsnapframes.h"
 #include "ui_dialogsnapframes.h"
+#include "settings.h"
 
 dialogSnapFrames::dialogSnapFrames(QWidget *parent, int progMax) :
     QDialog(parent),
@@ -20,7 +21,7 @@ dialogSnapFrames::~dialogSnapFrames()
 
 void dialogSnapFrames::setCurProgress(int cur, int total){
     ui->progressBar->setValue(cur);
-    ui->labelProgress->setText(QString::number(cur) + " processed from " + QString::number(total) + " frames.");
+    ui->labelProgress->setText(QString::number(cur) + " processed from " + QString::number(total -  Settings::getInstance(this)->getFrameToSkip() + 1) + " frames.");
 }
 
 void dialogSnapFrames::setButtonEnable(bool)

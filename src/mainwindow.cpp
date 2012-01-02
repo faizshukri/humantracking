@@ -181,6 +181,7 @@ void MainWindow::toggleCaptureFrame(){
 
 void MainWindow::toggleCaptureFrames(){
 
+    //this->curFrame = 1;//baru tambah
     this->capture->set(CV_CAP_PROP_POS_FRAMES, 0);
     this->mThread->setValueJ(0);
     this->mThread->frameToSkip = this->settings->getFrameToSkip();
@@ -199,6 +200,7 @@ void MainWindow::toggleCaptureFrames(){
     this->dialogSnaps->setFixedWidth(300);
     this->dialogSnaps->open();
 
+    //if user press capture frame when the video is pause or finish playing
     if(this->mThread->pause || (!this->mThread->pause && this->curFrame == this->totalFrame)){
         ui->btnPlayPause->setIcon(QIcon(":/images/pause"));
         this->mThread->pause = false;
@@ -235,7 +237,7 @@ void MainWindow::snapAllFrames(Mat &img){
     cv::imwrite(fileName, img);
 
     //to update to the progress dialog
-    emit displayCurProgress(this->curFrame + 1, this->totalFrame);
+    emit displayCurProgress(this->curFrame, this->totalFrame);
 }
 
 
@@ -353,11 +355,11 @@ void MainWindow::finishProcess(bool state)
     //force the cur frame to be same with total frame. to enable restart after snap all frame
     this->curFrame = this->totalFrame;
     ui->slideTimeline->setValue(this->curFrame);
-  //  ++this->curFrame;
     if (state){
         ui->btnPlayPause->setIcon(QIcon(":/images/repeat"));
 
         if(this->captureFrames){
+            dialogSnaps->setCurProgress(this->curFrame, this->totalFrame);
             dialogSnaps->setButtonEnable(true);
             this->captureFrames = false;
         }
