@@ -180,45 +180,49 @@ void Exports::setThresh(QString val){
 
 void Exports::timerTick(){ //if user start export by press button export
 
-    showProgressBar(true);
-    ui->btnBrowse->setDisabled(true);
-    //If user export the same video as before without re load new video
-    if(this->curFrame !=0){
-        this->curFrame = 0;
-        ui->progressBarTotal->setValue(0);
-        for(int i = 0; i < this->count; i++){
-            this->capture[i]->set(CV_CAP_PROP_POS_FRAMES,0);
+    if(ui->listVideos->count() != 0){
+        showProgressBar(true);
+        ui->btnBrowse->setDisabled(true);
+        //If user export the same video as before without re load new video
+        if(this->curFrame !=0){
+            this->curFrame = 0;
+            ui->progressBarTotal->setValue(0);
+            for(int i = 0; i < this->count; i++){
+                this->capture[i]->set(CV_CAP_PROP_POS_FRAMES,0);
+            }
         }
-    }
 
-    cv::Mat img;
-    this->curFrame += this->count;
+        cv::Mat img;
+        this->curFrame += this->count;
 
-    for(int i = 0; i < this->count; i++){
+        for(int i = 0; i < this->count; i++){
 
-        this->capture[i]->operator >>( img );
-        if(!img.data) break;
+            this->capture[i]->operator >>( img );
+            if(!img.data) break;
 
-        string path = this->setting->getExportPath().toStdString() + "\\" + this->fileName.at(i).toStdString();
-       // this->writer = new cv::VideoWriter(path, CV_FOURCC('D','I','V','X'), this->capture[i]->get(CV_CAP_PROP_FPS), img.size(), true);
+            string path = this->setting->getExportPath().toStdString() + "\\" + this->fileName.at(i).toStdString();
+           // this->writer = new cv::VideoWriter(path, CV_FOURCC('D','I','V','X'), this->capture[i]->get(CV_CAP_PROP_FPS), img.size(), true);
 
-        //if checkbox extract interest point is checked
-        int extractPoint = 0;
-        if(ui->radioSurf->isChecked() && ui->checkPoints->isChecked()) extractPoint = 1;
-        else if(ui->radioHog->isChecked() && ui->checkPoints->isChecked()) extractPoint = 2;
+            //if checkbox extract interest point is checked
+            int extractPoint = 0;
+            if(ui->radioSurf->isChecked() && ui->checkPoints->isChecked()) extractPoint = 1;
+            else if(ui->radioHog->isChecked() && ui->checkPoints->isChecked()) extractPoint = 2;
 
-        //Initialize thread object
-        this->thread[i] = new processThread(this,this->capture[i], true, extractPoint, path);
-        this->thread[i]->pauseAt = 1;
-
-
-        connect(this->thread[i], SIGNAL(currentFrame(int)), this, SLOT(setCurFrame(int)));
-        setInitialProp(this->thread[i]);
+            //Initialize thread object
+            this->thread[i] = new processThread(this,this->capture[i], true, extractPoint, path);
+            this->thread[i]->pauseAt = 1;
 
 
-        QThreadPool::globalInstance()->start(new MyTask(thread[i]));
-        //this->thread[i]->start();
+            connect(this->thread[i], SIGNAL(currentFrame(int)), this, SLOT(setCurFrame(int)));
+            setInitialProp(this->thread[i]);
 
+
+            QThreadPool::globalInstance()->start(new MyTask(thread[i]));
+            //this->thread[i]->start();
+
+        }
+    } else {
+        QMessageBox::information(this, "Export Video", "You can't export when there's no video in the list.", QMessageBox::Ok);
     }
 }
 

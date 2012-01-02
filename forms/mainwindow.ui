@@ -340,7 +340,8 @@
           <item>
            <widget class="QLabel" name="labelTimeline">
             <property name="text">
-             <string>label</string>
+             <string>0/0
+0/0</string>
             </property>
            </widget>
           </item>
