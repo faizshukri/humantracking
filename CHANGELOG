@@ -1,0 +1,30 @@
+Changelog
+
+[30/12/2011]
+* Can't reBrowse after the first video finish played	fixed	remove this->mthread->destroy in loadVideo mainwindow.cpp
+* Can't continue playing video when video were pause	fixed	add checking pause condition before emit finishProcess signal in processThread
+* Can't play again the video				fixed 	add checking pause condition false and cur frame equal to totalframe on button clicked
+* Problem when user move the video slider		open	function set(CV_CAP_PROP_POS_FRAMES) from OpenCV is still problem. We plan to deprecate this feature.
+* Can't replay if user cancel to load new video file	fixed	move the assignment curFrame to inside the checking scope in mainWindow
+* Can't capture all frames when video is finish played	fixed	add condition in toggleCaptureFrames for video that was finish display
+* Can't rebrowse when the video still playing		fixed	manytimes its ok, sometimes it problem. dont know the solution
+
+[31/12/2011]
+* Can't re export					fixed	delete a line and reorder the function in reBrowse
+* When finish export, it show 3 pop up message		fixed	initialize var move in export
+* Press capture screen button while pause/stop, will delay the capture untill the video is play	fixed	prevent user from capture while video is play / pause
+* Error when user click button play without load video first	fixed	disabled button play on program load
+* Error when user click button capture screen without load video first	fixed	disabled button capture screen on program load
+* After install, program can't access folder program files to create output directory	fixed	change output folder to Users Document
+* Can't reexport the same videos in list	fixed	add condition if cur frame is not 0 in timertick inside exports
+* Capture all frames is not precise. Stop before 100%	fixed	add update label to totalframe in finishprocess in mainwindow
+
+[2/1/2012]
+* Error display progress label when capture frames, when frame to skip larger than 1	fixed	discard the maximumVal of progressbar to totalframe, and set the val of progressbar to totalframe when finish process
+* Error when user click export when there is no video loaded	fixed	check the video list if 0 when button export is press and inform the user
+
+[3/1/2012]
+* Change output filetype from txt to dat		fixed	change the filetype in processThread class
+
+[4/1/2012]
+* Edit the about us design interface			fixed	Edit class about.cpp
