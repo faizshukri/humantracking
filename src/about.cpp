@@ -6,6 +6,7 @@ About::About(QWidget *parent) :
     ui(new Ui::About)
 {
     ui->setupUi(this);
+    ui->labelPic->setPixmap(QPixmap(":/images/about"));
     connect(ui->btnClose, SIGNAL(clicked()), this, SLOT(close()));
 }
 

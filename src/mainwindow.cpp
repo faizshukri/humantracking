@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->exports = new Exports(this);
     this->settings = Settings::getInstance(this);
     this->aboutUs = new About(this);
-    aboutUs->setFixedSize(400, 180);
+    aboutUs->setFixedSize(490, 360);
 
 
     //Connect all the element

@@ -19,7 +19,12 @@ Faculty of Information Technology, Multimedia University, Cyberjaya, Malaysia
 ============
 Installation
 ============
-First you have to download this source code. Then open it using Nokia QT, install it if you dont have.  After that, compile and run. Enjoy.
+1. Download this source code.
+2. Install MinGW 0.4 Alpha 1, and include its binary folder to Windows Environment path.
+2. Install Nokia Qt Creator and include the folder /Desktop/Qt/4.7.4/mingw/bin to Windows Environment path..
+3. Compile OpenCV2.3 and include its binary folder to Windows Environment path.
+4. Open the Qt Project, compile and run. 
+5. Enjoy
 
 
 ====================
@@ -40,17 +45,3 @@ MinGW Compiler Version 0.4 Alpha 1
 Licensing/Legal
 ===============
 This mod is released under the GNU General Public License.<br>The GPL can be found here: http://www.gnu.org/licenses/gpl.txt
-
-
-==========
-Changelog
-==========
-[30/12/2011]
-* Can't reBrowse after the first video finish played	fixed	remove this->mthread->destroy in loadVideo mainwindow.cpp
-* Can't continue playing video when video were pause	fixed	add checking pause condition before emit finishProcess signal in processThread
-* Can't play again the video				fixed 	add checking pause condition false and cur frame equal to totalframe on button clicked
-* Problem when user move the video slider		still problem	function set(CV_CAP_PROP_POS_FRAMES) from OpenCV is still problem. We plan to deprecate this feature.
-* Can't replay if user cancel to load new video file	fixed	move the assignment curFrame to inside the checking scope in mainWindow
-* Can't capture all frames when video is finish played	fixed	add condition in toggleCaptureFrames for video that was finish display
-* Can't rebrowse when the video still playing		open
-* Can't re export					open

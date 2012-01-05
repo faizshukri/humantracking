@@ -8,5 +8,6 @@
         <file alias="capture_all">images/capture_all.png</file>
         <file alias="export">images/export.png</file>
         <file alias="open">images/open.png</file>
+        <file alias="about">images/about.png</file>
     </qresource>
 </RCC>

@@ -179,7 +179,7 @@ void processThread::resendExtractPoint(IpVec val)
             path.mkdir(extractPointDir);
 
         //Process the points
-        this->points[this->count] = new processPoints(this, val, extractPointDir + QString::number(this->count) + ".txt");
+        this->points[this->count] = new processPoints(this, val, extractPointDir + QString::number(this->count) + ".dat");
 
     }
     ++count;
