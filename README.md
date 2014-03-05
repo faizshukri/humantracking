@@ -36,17 +36,18 @@ Compatibility Issues
  - The detection will be precise for black and white video only. And not always work in Color video.
  - Navigation sometimes not correct.
 
-Minimum Requirement ( as i'm developing this project)
+Minimum Requirement
 -----------
-Nokia Qt 4.7
-OpenCV 2.3
-MinGW Compiler Version 0.4 Alpha 1
+These are the version when  i'm developing this project
+ - Nokia Qt 4.7
+ - OpenCV 2.3
+ - MinGW Compiler Version 0.4 Alpha 1
 
 Authors
 -----------
-Developer: Faiz Shukri
-Version: 1.0
-Release Date: 02/01/2012
+ - Developer: Faiz Shukri
+ - Version: 1.0
+ - Release Date: 02/01/2012
 
 Licensing/Legal
 -----------
