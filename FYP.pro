@@ -4,11 +4,12 @@
 #
 #-------------------------------------------------
 
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+
 QT       += core gui
 
 TARGET = FYP
 TEMPLATE = app
-
 
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
@@ -48,16 +49,16 @@ FORMS    += forms/mainwindow.ui \
     forms/about.ui \
     forms/dialogsnapframes.ui
 
-INCLUDEPATH += D:\OpenCV2.3MinGW\include\
+INCLUDEPATH += /usr/local/include/
 
-LIBS += -LD:\OpenCV2.3MinGW\lib \
-    -llibopencv_core231 \
-    -llibopencv_highgui231 \
-    -llibopencv_imgproc231 \
-    -llibopencv_calib3d231 \
-    -llibopencv_objdetect231 \
-    -llibopencv_flann231d \
-    -llibopencv_features2d231d
+LIBS += -L/usr/local/lib/ \
+    -lopencv_core \
+    -lopencv_highgui \
+    -lopencv_imgproc \
+    -lopencv_calib3d \
+    -lopencv_objdetect \
+    -lopencv_flann \
+    -lopencv_features2d
 
 #LIBS += -LD:\OpenCV2.3MinGW\lib \
 #    -llibopencv_core231d \
