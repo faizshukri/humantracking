@@ -13,8 +13,8 @@ class processPoints : public QObject
     Q_OBJECT
 public:
      // param fileName is including the frame no (current frame)
-    explicit processPoints(QObject *parent = 0, IpVec point = 0, QString fileName = "");
-    explicit processPoints(QObject *parent = 0, vector<Rect> point = 0, QString fileName = "");
+    explicit processPoints(QObject *parent = 0, IpVec point = (IpVec) 0, QString fileName = "");
+    explicit processPoints(QObject *parent = 0, vector<Rect> point = (vector<Rect>) 0, QString fileName = "");
     ~processPoints();
 
 signals:
