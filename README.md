@@ -39,7 +39,7 @@ Compatibility Issues
 Minimum Requirement
 -----------
 These are the version when  i'm developing this project
- - Nokia Qt 4.7
+ - Nokia Qt 4.7 (Up till 4.8. Not working with v5.*)
  - OpenCV 2.3
  - MinGW Compiler Version 0.4 Alpha 1
 
